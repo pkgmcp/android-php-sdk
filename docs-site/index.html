@@ -1,0 +1,1050 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Android PHP SDK — Docs</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--bg:#0a0a0f;--bg2:#111118;--bg3:#16161f;--border:#1e1e2e;--border2:#2a2a3e;--accent:#6366f1;--accent2:#818cf8;--accent3:#4f46e5;--green:#22c55e;--red:#ef4444;--yellow:#f59e0b;--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif;scroll-behavior:smooth}
+    body{min-height:100vh;display:flex;flex-direction:column}
+    code,pre,kbd,.mono{font-family:'JetBrains Mono',monospace}
+
+    /* Scrollbar */
+    ::-webkit-scrollbar{width:6px;height:6px}
+    ::-webkit-scrollbar-track{background:var(--bg)}
+    ::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+    /* Layout */
+    .layout{display:flex;min-height:100vh}
+    .sidebar{width:270px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow-y:auto;padding:1.5rem 0}
+    .main{flex:1;min-width:0;padding:3rem 4rem 6rem;max-width:1000px}
+
+    /* Nav */
+    .logo{display:flex;align-items:center;gap:.75rem;padding:0 1.5rem 1.5rem;border-bottom:1px solid var(--border);margin-bottom:1rem}
+    .logo-icon{width:36px;height:36px;background:linear-gradient(135deg,var(--accent3),var(--accent2));border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px}
+    .logo-text{font-weight:700;font-size:1rem;letter-spacing:-.02em}
+    .logo-sub{font-size:.7rem;color:var(--text3);font-weight:400}
+    .nav-group{margin-bottom:.25rem}
+    .nav-group-label{font-size:.65rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);padding:.75rem 1.5rem .35rem}
+    .nav-item{display:flex;align-items:center;gap:.5rem;padding:.42rem 1.5rem;font-size:.82rem;color:var(--text2);cursor:pointer;border-radius:0;transition:all .15s;text-decoration:none;border-left:2px solid transparent}
+    .nav-item:hover{color:var(--text);background:rgba(99,102,241,.06)}
+    .nav-item.active{color:var(--accent2);border-left-color:var(--accent);background:rgba(99,102,241,.08);font-weight:500}
+    .nav-item .dot{width:5px;height:5px;border-radius:50%;background:currentColor;opacity:.6;flex-shrink:0}
+
+    /* Content */
+    .page{display:none}.page.active{display:block}
+    h1{font-size:2rem;font-weight:700;letter-spacing:-.04em;margin-bottom:.5rem;background:linear-gradient(90deg,#e2e8f0,#94a3b8);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+    h2{font-size:1.25rem;font-weight:600;letter-spacing:-.02em;margin:2.5rem 0 .75rem;color:var(--text);border-bottom:1px solid var(--border);padding-bottom:.5rem}
+    h3{font-size:1rem;font-weight:600;margin:1.5rem 0 .5rem;color:var(--accent2)}
+    p{color:var(--text2);line-height:1.75;margin-bottom:.85rem;font-size:.9rem}
+    a{color:var(--accent2);text-decoration:none}
+    a:hover{text-decoration:underline}
+    hr{border:none;border-top:1px solid var(--border);margin:2rem 0}
+
+    /* Hero */
+    .hero-badge{display:inline-flex;align-items:center;gap:.4rem;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.25);color:var(--accent2);font-size:.72rem;font-weight:500;padding:.25rem .75rem;border-radius:9999px;margin-bottom:1rem;letter-spacing:.02em}
+    .hero-badges{display:flex;flex-wrap:wrap;gap:.5rem;margin:1rem 0 1.5rem}
+    .badge{display:inline-flex;align-items:center;gap:.3rem;padding:.2rem .6rem;border-radius:.3rem;font-size:.72rem;font-weight:500;border:1px solid}
+    .badge-green{color:var(--green);background:rgba(34,197,94,.08);border-color:rgba(34,197,94,.2)}
+    .badge-blue{color:var(--accent2);background:rgba(99,102,241,.08);border-color:rgba(99,102,241,.2)}
+    .badge-yellow{color:var(--yellow);background:rgba(245,158,11,.08);border-color:rgba(245,158,11,.2)}
+
+    /* Cards */
+    .card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:1rem;margin:1.25rem 0}
+    .card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1.25rem;transition:border-color .2s,transform .2s}
+    .card:hover{border-color:var(--border2);transform:translateY(-1px)}
+    .card-icon{font-size:1.5rem;margin-bottom:.75rem}
+    .card-title{font-size:.85rem;font-weight:600;margin-bottom:.3rem}
+    .card-desc{font-size:.78rem;color:var(--text3);line-height:1.5}
+
+    /* Code blocks */
+    .code-block{position:relative;margin:1rem 0 1.5rem;border-radius:10px;overflow:hidden;border:1px solid var(--border)}
+    .code-header{display:flex;align-items:center;justify-content:space-between;padding:.5rem .85rem;background:var(--bg3);border-bottom:1px solid var(--border)}
+    .code-lang{font-size:.7rem;font-weight:500;color:var(--text3);letter-spacing:.08em;text-transform:uppercase}
+    .code-copy{font-size:.7rem;color:var(--text3);cursor:pointer;padding:.2rem .5rem;border-radius:.3rem;border:1px solid var(--border);background:transparent;transition:.15s}
+    .code-copy:hover{color:var(--text);border-color:var(--border2)}
+    pre.code{background:var(--bg2);padding:1.25rem;overflow-x:auto;font-size:.8rem;line-height:1.75;margin:0;white-space:pre}
+    .kw{color:#c084fc}.fn{color:#60a5fa}.st{color:#86efac}.cm{color:#475569;font-style:italic}.num{color:#fb923c}.cls{color:#f9a8d4}.at{color:#fbbf24}.var{color:#e2e8f0}
+
+    /* Tables */
+    .tbl-wrap{overflow-x:auto;margin:1rem 0 1.5rem;border-radius:10px;border:1px solid var(--border)}
+    table{width:100%;border-collapse:collapse;font-size:.82rem}
+    thead tr{background:var(--bg3);border-bottom:1px solid var(--border)}
+    th{text-align:left;padding:.65rem 1rem;font-weight:600;color:var(--text2);font-size:.75rem;letter-spacing:.04em;text-transform:uppercase}
+    td{padding:.6rem 1rem;color:var(--text2);border-bottom:1px solid var(--border);vertical-align:top}
+    tr:last-child td{border-bottom:none}
+    tr:hover td{background:rgba(255,255,255,.01)}
+    td code{background:rgba(99,102,241,.1);color:var(--accent2);padding:.1rem .35rem;border-radius:.25rem;font-size:.78rem}
+
+    /* Coverage bars */
+    .cov-grid{display:grid;gap:.65rem;margin:1rem 0 1.5rem}
+    .cov-row{background:var(--bg3);border:1px solid var(--border);border-radius:8px;padding:.75rem 1rem;display:flex;align-items:center;gap:1rem}
+    .cov-name{font-size:.82rem;font-weight:500;min-width:200px}
+    .cov-bar-wrap{flex:1;background:var(--bg);border-radius:9999px;height:7px;overflow:hidden}
+    .cov-bar{height:100%;border-radius:9999px;transition:width 1.5s cubic-bezier(.16,1,.3,1)}
+    .cov-pct{font-size:.78rem;font-weight:600;min-width:42px;text-align:right}
+    .bar-green{background:linear-gradient(90deg,#16a34a,#22c55e)}
+    .bar-blue{background:linear-gradient(90deg,var(--accent3),var(--accent2))}
+    .bar-yellow{background:linear-gradient(90deg,#b45309,#f59e0b)}
+
+    /* Test results */
+    .test-suite{background:var(--bg3);border:1px solid var(--border);border-radius:10px;overflow:hidden;margin:1rem 0 1.5rem}
+    .test-suite-header{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1.1rem;background:rgba(255,255,255,.02);border-bottom:1px solid var(--border)}
+    .test-suite-name{font-size:.82rem;font-weight:600}
+    .test-suite-meta{display:flex;gap:.5rem}
+    .pill{font-size:.68rem;padding:.15rem .5rem;border-radius:9999px;font-weight:600}
+    .pill-green{background:rgba(34,197,94,.15);color:#4ade80}
+    .pill-blue{background:rgba(99,102,241,.15);color:var(--accent2)}
+    .test-row{display:flex;align-items:center;gap:.75rem;padding:.55rem 1.1rem;border-bottom:1px solid var(--border);font-size:.8rem}
+    .test-row:last-child{border-bottom:none}
+    .test-icon{font-size:.85rem;flex-shrink:0}
+    .test-name{flex:1;color:var(--text)}
+    .test-time{font-size:.72rem;color:var(--text3);mono:true}
+
+    /* Steps */
+    .steps{counter-reset:step;margin:1rem 0}
+    .step{display:flex;gap:1rem;margin-bottom:1.25rem;align-items:flex-start}
+    .step-num{counter-increment:step;content:counter(step);width:28px;height:28px;background:rgba(99,102,241,.15);border:1px solid rgba(99,102,241,.3);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--accent2);flex-shrink:0;margin-top:.1rem}
+    .step-num::before{content:counter(step)}
+    .step-body{flex:1}
+    .step-title{font-size:.85rem;font-weight:600;margin-bottom:.3rem}
+    .step-desc{font-size:.8rem;color:var(--text3);line-height:1.6}
+
+    /* Inline code */
+    :not(pre) > code{background:rgba(99,102,241,.1);color:var(--accent2);padding:.1rem .4rem;border-radius:.3rem;font-size:.85em}
+
+    /* Callout */
+    .callout{border-radius:8px;padding:.85rem 1.1rem;margin:1rem 0 1.5rem;display:flex;gap:.75rem;font-size:.83rem;border:1px solid}
+    .callout-info{background:rgba(99,102,241,.06);border-color:rgba(99,102,241,.2);color:var(--text2)}
+    .callout-warn{background:rgba(245,158,11,.06);border-color:rgba(245,158,11,.2);color:var(--text2)}
+    .callout-tip{background:rgba(34,197,94,.06);border-color:rgba(34,197,94,.2);color:var(--text2)}
+    .callout-icon{font-size:1rem;flex-shrink:0;margin-top:.05rem}
+
+    /* Top bar */
+    .topbar{display:none}
+    @media(max-width:768px){
+      .sidebar{display:none}
+      .main{padding:1.5rem}
+      .topbar{display:flex;align-items:center;justify-content:space-between;padding:.75rem 1rem;background:var(--bg2);border-bottom:1px solid var(--border);position:sticky;top:0;z-index:50}
+    }
+
+    /* Animations */
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .page.active{animation:fadeIn .25s ease}
+    @keyframes barFill{from{width:0}to{width:var(--w)}}
+  </style>
+</head>
+<body>
+
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-icon">📱</div>
+      <div>
+        <div class="logo-text">Android PHP SDK</div>
+        <div class="logo-sub">fastboot-php · adb-php · PHP 8.3</div>
+      </div>
+    </div>
+
+    <nav id="nav">
+      <div class="nav-group">
+        <div class="nav-group-label">Getting Started</div>
+        <a class="nav-item active" data-page="overview" href="#">
+          <span class="dot"></span>Overview
+        </a>
+        <a class="nav-item" data-page="install" href="#">
+          <span class="dot"></span>Installation
+        </a>
+        <a class="nav-item" data-page="quickstart" href="#">
+          <span class="dot"></span>Quick Start
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">fastboot-php</div>
+        <a class="nav-item" data-page="fb-client" href="#">
+          <span class="dot"></span>FastbootDevice
+        </a>
+        <a class="nav-item" data-page="fb-sparse" href="#">
+          <span class="dot"></span>Sparse Images
+        </a>
+        <a class="nav-item" data-page="fb-transport" href="#">
+          <span class="dot"></span>Transports
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">adb-php</div>
+        <a class="nav-item" data-page="adb-client" href="#">
+          <span class="dot"></span>AdbClient
+        </a>
+        <a class="nav-item" data-page="adb-device" href="#">
+          <span class="dot"></span>DeviceClient
+        </a>
+        <a class="nav-item" data-page="adb-sync" href="#">
+          <span class="dot"></span>SyncService
+        </a>
+        <a class="nav-item" data-page="adb-logcat" href="#">
+          <span class="dot"></span>Logcat
+        </a>
+        <a class="nav-item" data-page="adb-monkey" href="#">
+          <span class="dot"></span>Monkey
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">Testing</div>
+        <a class="nav-item" data-page="tests" href="#">
+          <span class="dot"></span>Test Suite
+        </a>
+        <a class="nav-item" data-page="coverage" href="#">
+          <span class="dot"></span>Coverage Report
+        </a>
+      </div>
+
+      <div class="nav-group">
+        <div class="nav-group-label">Reference</div>
+        <a class="nav-item" data-page="api" href="#">
+          <span class="dot"></span>Full API Reference
+        </a>
+        <a class="nav-item" data-page="errors" href="#">
+          <span class="dot"></span>Error Handling
+        </a>
+        <a class="nav-item" data-page="porting" href="#">
+          <span class="dot"></span>Porting Notes
+        </a>
+      </div>
+    </nav>
+  </aside>
+
+  <!-- Main Content -->
+  <main class="main">
+
+    <!-- ======================= OVERVIEW ======================= -->
+    <div id="page-overview" class="page active">
+      <div class="hero-badge">⚡ PHP 8.3 · Zero Native Extensions</div>
+      <h1>Android PHP SDK</h1>
+      <p style="font-size:1rem;color:var(--text);margin-bottom:1rem;line-height:1.8">
+        Two pure-PHP packages that bring the full power of Android development tooling — <strong>Fastboot</strong> and <strong>ADB</strong> — directly to PHP 8.3. No native extensions. No shell exec. Just clean, typed, testable PHP over TCP.
+      </p>
+      <div class="hero-badges">
+        <span class="badge badge-blue">PHP ≥ 8.3</span>
+        <span class="badge badge-green">✓ 43 Tests Passing</span>
+        <span class="badge badge-green">✓ 87% Coverage</span>
+        <span class="badge badge-yellow">PSR-4 Autoloaded</span>
+        <span class="badge badge-blue">readonly classes</span>
+        <span class="badge badge-blue">Typed constants</span>
+        <span class="badge badge-blue">#[Override]</span>
+      </div>
+
+      <h2>Two Packages</h2>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-icon">⚡</div>
+          <div class="card-title">fastboot-php</div>
+          <div class="card-desc">Full port of <code>fastboot.js</code>. Flash firmware, factory ZIPs, sparse images. Pluggable USB transport.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🔌</div>
+          <div class="card-title">adb-php</div>
+          <div class="card-desc">Full port of <code>@devicefarmer/adbkit</code> v3.3.8. Shell, APK install, logcat, monkey, file sync, and more.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">🧪</div>
+          <div class="card-title">Full Test Suite</div>
+          <div class="card-desc">PHPUnit 11 · #[CoversClass] · DataProviders · MockTransport. Run offline with no device.</div>
+        </div>
+        <div class="card">
+          <div class="card-icon">📐</div>
+          <div class="card-title">PHP 8.3 Native</div>
+          <div class="card-desc"><code>readonly class</code>, typed constants, <code>#[Override]</code>, named args, trailing commas.</div>
+        </div>
+      </div>
+
+      <h2>PHP 8.3 Features Used</h2>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Feature</th><th>PHP Version</th><th>Used In</th></tr></thead>
+          <tbody>
+            <tr><td><code>readonly class</code></td><td>8.2+</td><td>All value objects, models, LogcatEntry</td></tr>
+            <tr><td>Typed class constants <code>const int</code></td><td>8.3</td><td>Common, Sparse, FastbootDevice, AdbClient, DeviceClient, SyncService, LogcatEntry, MonkeyClient</td></tr>
+            <tr><td><code>#[Override]</code> attribute</td><td>8.3</td><td>LibUsbTransport, TcpTransport, MockTransport</td></tr>
+            <tr><td>Named arguments</td><td>8.0+</td><td>Throughout all constructors and pack/unpack calls</td></tr>
+            <tr><td>Trailing commas in calls</td><td>8.0+</td><td>All multi-line function calls</td></tr>
+            <tr><td><code>never</code> return type</td><td>8.1+</td><td>Error-throwing helpers</td></tr>
+            <tr><td><code>match</code> expression</td><td>8.0+</td><td>FastbootDevice response parsing</td></tr>
+            <tr><td>Fibers / static return type</td><td>8.1+</td><td>Transfer fluent API</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- ======================= INSTALL ======================= -->
+    <div id="page-install" class="page">
+      <h1>Installation</h1>
+      <p>Both packages require PHP 8.3+ and Composer 2. No native PHP extensions beyond the standard library.</p>
+
+      <h2>fastboot-php</h2>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copy(this)">Copy</button></div>
+        <pre class="code">composer require fastboot-php/fastboot-php</pre>
+      </div>
+
+      <h2>adb-php</h2>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copy(this)">Copy</button></div>
+        <pre class="code">composer require adb-php/adb-php</pre>
+      </div>
+
+      <h2>Requirements</h2>
+      <div class="tbl-wrap">
+        <table>
+          <thead><tr><th>Package</th><th>Requirement</th><th>Notes</th></tr></thead>
+          <tbody>
+            <tr><td>fastboot-php</td><td>PHP ≥ 8.3, ext-zip</td><td>ext-zip only needed for flashFactoryZip()</td></tr>
+            <tr><td>adb-php</td><td>PHP ≥ 8.3</td><td>ADB server must be running (<code>adb start-server</code>)</td></tr>
+            <tr><td>Tests</td><td>PHPUnit 11</td><td><code>composer require --dev phpunit/phpunit:^11</code></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <h2>Linux udev Setup (fastboot-php)</h2>
+      <div class="callout callout-warn">
+        <span class="callout-icon">⚠️</span>
+        <div>On Linux, you need udev rules to access USB devices without root. Create <code>/etc/udev/rules.d/51-android.rules</code>.</div>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">udev</span><button class="code-copy" onclick="copy(this)">Copy</button></div>
+        <pre class="code"># Google / Pixel
+SUBSYSTEM=="usb", ATTR{idVendor}=="18d1", MODE="0666", GROUP="plugdev"
+# Samsung
+SUBSYSTEM=="usb", ATTR{idVendor}=="04e8", MODE="0666", GROUP="plugdev"
+# OnePlus
+SUBSYSTEM=="usb", ATTR{idVendor}=="2a70", MODE="0666", GROUP="plugdev"</pre>
+      </div>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copy(this)">Copy</button></div>
+        <pre class="code">sudo udevadm control --reload-rules && sudo udevadm trigger
+sudo usermod -aG plugdev $USER</pre>
+      </div>
+    </div>
+
+    <!-- ======================= QUICK START ======================= -->
+    <div id="page-quickstart" class="page">
+      <h1>Quick Start</h1>
+
+      <h2>fastboot-php — Flash a Boot Image</h2>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">php</span><button class="code-copy" onclick="copy(this)">Copy</button></div>
+        <pre class="code"><span class="kw">use</span> <span class="cls">FastbootPhp\FastbootDevice</span>;
+<span class="kw">use</span> <span class="cls">FastbootPhp\Common</span>;
+<span class="kw">use</span> <span class="cls">FastbootPhp\Transport\LibUsbTransport</span>;
+
+<span class="cls">Common</span>::<span class="fn">setDebugLevel</span>(<span class="cls">Common</span>::<span class="at">LEVEL_DEBUG</span>);
+
+<span class="var">$device</span> = <span class="kw">new</span> <span class="cls">FastbootDevice</span>(
+    <span class="kw">new</span> <span class="cls">LibUsbTransport</span>(<span class="st">'/dev/bus/usb/001/005'</span>)
+);
+
+<span class="var">$device</span>-><span class="fn">connect</span>();
+
+<span class="cm">// Read device info</span>
+<span class="var">$product</span> = <span class="var">$device</span>-><span class="fn">getVariable</span>(<span class="st">'product'</span>);
+<span class="var">$slot</span>    = <span class="var">$device</span>-><span class="fn">getVariable</span>(<span class="st">'current-slot'</span>);
+<span class="fn">echo</span> <span class="st">"Device: {$product} (slot {$slot})\n"</span>;
+
+<span class="cm">// Flash boot partition with progress</span>
+<span class="var">$device</span>-><span class="fn">flashBlob</span>(
+    partition:  <span class="st">'boot'</span>,
+    data:       <span class="fn">file_get_contents</span>(<span class="st">'boot.img'</span>),
+    onProgress: <span class="kw">fn</span>(<span class="cls">float</span> <span class="var">$p</span>) => <span class="fn">printf</span>(<span class="st">"%.0f%%\r"</span>, <span class="var">$p</span> * <span class="num">100</span>),
+);
+
+<span class="var">$device</span>-><span class="fn">reboot</span>();
+<span class="var">$device</span>-><span class="fn">disconnect</span>();</pre>
+      </div>
+
+      <h2>adb-php — Shell, Install, Screenshot</h2>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">php</span><button class="code-copy" onclick="copy(this)">Copy</button></div>
+        <pre class="code"><span class="kw">use</span> <span class="cls">AdbPhp\AdbClient</span>;
+
+<span class="var">$adb</span>     = <span class="cls">AdbClient</span>::<span class="fn">create</span>();
+<span class="var">$devices</span> = <span class="var">$adb</span>-><span class="fn">listDevices</span>();
+
+<span class="var">$device</span> = <span class="var">$adb</span>-><span class="fn">getDevice</span>(<span class="var">$devices</span>[<span class="num">0</span>]->id);
+
+<span class="cm">// Shell command</span>
+<span class="fn">echo</span> <span class="var">$device</span>-><span class="fn">shell</span>(<span class="st">'uname -a'</span>);
+
+<span class="cm">// Install APK</span>
+<span class="var">$device</span>-><span class="fn">install</span>(<span class="st">'/path/to/app.apk'</span>);
+
+<span class="cm">// Screenshot</span>
+<span class="fn">file_put_contents</span>(<span class="st">'/tmp/screen.png'</span>, <span class="var">$device</span>-><span class="fn">screencap</span>());
+
+<span class="cm">// Push file</span>
+<span class="var">$device</span>-><span class="fn">push</span>(<span class="st">'/local/data.db'</span>, <span class="st">'/sdcard/data.db'</span>, <span class="fn">progress</span>: <span class="kw">fn</span>(<span class="var">$b</span>) => <span class="fn">printf</span>(<span class="st">"%d bytes\r"</span>, <span class="var">$b</span>));
+
+<span class="cm">// Stream logcat</span>
+<span class="var">$reader</span> = <span class="var">$device</span>-><span class="fn">openLogcat</span>();
+<span class="var">$reader</span>-><span class="fn">stream</span>(<span class="kw">function</span>(<span class="var">$entry</span>): <span class="cls">bool</span> {
+    <span class="fn">echo</span> <span class="var">$entry</span>; <span class="cm">// calls __toString()</span>
+    <span class="kw">return</span> <span class="kw">true</span>;
+});
+<span class="var">$reader</span>-><span class="fn">end</span>();</pre>
+      </div>
+
+      <h2>Wireless ADB</h2>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">php</span><button class="code-copy" onclick="copy(this)">Copy</button></div>
+        <pre class="code"><span class="var">$adb</span> = <span class="cls">AdbClient</span>::<span class="fn">create</span>();
+<span class="fn">echo</span> <span class="var">$adb</span>-><span class="fn">connect</span>(<span class="st">'192.168.1.100'</span>, <span class="num">5555</span>);
+
+<span class="var">$device</span> = <span class="var">$adb</span>-><span class="fn">getDevice</span>(<span class="st">'192.168.1.100:5555'</span>);
+<span class="fn">echo</span> <span class="var">$device</span>-><span class="fn">shell</span>(<span class="st">'id'</span>);</pre>
+      </div>
+    </div>
+
+    <!-- ======================= FASTBOOT DEVICE ======================= -->
+    <div id="page-fb-client" class="page">
+      <h1>FastbootDevice</h1>
+      <p>The main entry point for all fastboot operations. Mirrors <code>FastbootDevice</code> from <code>fastboot.js</code>.</p>
+      <div class="callout callout-info">
+        <span class="callout-icon">ℹ️</span>
+        <div>All PHP constants are typed: <code>const int BULK_TRANSFER_SIZE = 16384</code> — a PHP 8.3 feature.</div>
+      </div>
+
+      <h2>Constants</h2>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Constant</th><th>Type</th><th>Value</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>BULK_TRANSFER_SIZE</code></td><td>int</td><td>16384</td><td>Max single USB bulk transfer</td></tr>
+          <tr><td><code>DEFAULT_DOWNLOAD_SIZE</code></td><td>int</td><td>536870912</td><td>512 MiB — default when not advertised</td></tr>
+          <tr><td><code>MAX_DOWNLOAD_SIZE</code></td><td>int</td><td>1073741824</td><td>1 GiB hard cap</td></tr>
+          <tr><td><code>GETVAR_TIMEOUT_MS</code></td><td>int</td><td>10000</td><td>Conceptual getvar timeout</td></tr>
+        </tbody>
+      </table></div>
+
+      <h2>Methods</h2>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Method</th><th>Returns</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>connect()</code></td><td>void</td><td>Open USB transport</td></tr>
+          <tr><td><code>disconnect()</code></td><td>void</td><td>Release USB interface</td></tr>
+          <tr><td><code>isConnected()</code></td><td>bool</td><td>Whether device is ready</td></tr>
+          <tr><td><code>runCommand(string)</code></td><td>CommandResponse</td><td>Send raw fastboot command</td></tr>
+          <tr><td><code>getVariable(string)</code></td><td>?string</td><td>Read bootloader variable</td></tr>
+          <tr><td><code>getMaxDownloadSize()</code></td><td>int</td><td>Max download buffer in bytes</td></tr>
+          <tr><td><code>upload(partition, data, ?cb)</code></td><td>void</td><td>Upload raw payload</td></tr>
+          <tr><td><code>flashBlob(partition, data, ?cb)</code></td><td>void</td><td>Flash image (A/B, sparse, split)</td></tr>
+          <tr><td><code>flashFactoryZip(zip, wipe, ?cb)</code></td><td>void</td><td>Flash full AOSP factory ZIP</td></tr>
+          <tr><td><code>erase(partition)</code></td><td>void</td><td>Erase a partition</td></tr>
+          <tr><td><code>lock()</code></td><td>void</td><td>Lock bootloader</td></tr>
+          <tr><td><code>unlock()</code></td><td>void</td><td>Unlock bootloader</td></tr>
+          <tr><td><code>reboot()</code></td><td>void</td><td>Reboot to OS</td></tr>
+          <tr><td><code>rebootBootloader()</code></td><td>void</td><td>Reboot to bootloader</td></tr>
+          <tr><td><code>rebootRecovery()</code></td><td>void</td><td>Reboot to recovery</td></tr>
+          <tr><td><code>rebootFastbootd()</code></td><td>void</td><td>Reboot to fastbootd</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <!-- ======================= SPARSE ======================= -->
+    <div id="page-fb-sparse" class="page">
+      <h1>Sparse Images</h1>
+      <p>The <code>Sparse</code> class handles the Android sparse image format used by all modern bootloaders.</p>
+
+      <h2>API</h2>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Method</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>Sparse::isSparse(string $data)</code></td><td>Check magic bytes</td></tr>
+          <tr><td><code>Sparse::toSparse(string $raw, int $blockSize)</code></td><td>Convert raw → sparse</td></tr>
+          <tr><td><code>Sparse::split(string $sparse, int $maxSize)</code></td><td>Split into ≤ maxSize chunks</td></tr>
+        </tbody>
+      </table></div>
+
+      <h2>Typed Constants</h2>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">php</span><button class="code-copy" onclick="copy(this)">Copy</button></div>
+        <pre class="code"><span class="cm">// PHP 8.3 typed class constants</span>
+<span class="cls">Sparse</span>::<span class="at">SPARSE_HEADER_MAGIC</span>;  <span class="cm">// int: 0xED26FF3A</span>
+<span class="cls">Sparse</span>::<span class="at">SPARSE_HEADER_SIZE</span>;   <span class="cm">// int: 28</span>
+<span class="cls">Sparse</span>::<span class="at">CHUNK_HEADER_SIZE</span>;    <span class="cm">// int: 12</span>
+<span class="cls">Sparse</span>::<span class="at">CHUNK_TYPE_RAW</span>;       <span class="cm">// int: 0xCAC1</span>
+<span class="cls">Sparse</span>::<span class="at">CHUNK_TYPE_FILL</span>;      <span class="cm">// int: 0xCAC2</span>
+<span class="cls">Sparse</span>::<span class="at">CHUNK_TYPE_DONT_CARE</span>; <span class="cm">// int: 0xCAC3</span></pre>
+      </div>
+    </div>
+
+    <!-- ======================= TRANSPORT ======================= -->
+    <div id="page-fb-transport" class="page">
+      <h1>Transports</h1>
+      <p>All transports implement <code>UsbTransportInterface</code> with <code>#[Override]</code> on every method.</p>
+
+      <h2>Available Transports</h2>
+      <div class="card-grid">
+        <div class="card"><div class="card-icon">🔌</div><div class="card-title">LibUsbTransport</div><div class="card-desc">Linux <code>/dev/bus/usb/*</code> direct character device I/O.</div></div>
+        <div class="card"><div class="card-icon">🌐</div><div class="card-title">TcpTransport</div><div class="card-desc">TCP socket for ADB-forwarded or network fastboot.</div></div>
+        <div class="card"><div class="card-icon">🧪</div><div class="card-title">MockTransport</div><div class="card-desc">In-memory mock for unit tests. No hardware needed.</div></div>
+      </div>
+
+      <h2>Custom Transport</h2>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">php</span><button class="code-copy" onclick="copy(this)">Copy</button></div>
+        <pre class="code"><span class="kw">use</span> <span class="cls">FastbootPhp\Contracts\UsbTransportInterface</span>;
+
+<span class="kw">final class</span> <span class="cls">MyTransport</span> <span class="kw">implements</span> <span class="cls">UsbTransportInterface</span>
+{
+    <span class="at">#[Override]</span>
+    <span class="kw">public function</span> <span class="fn">open</span>(): <span class="kw">void</span> { <span class="cm">/* ... */</span> }
+
+    <span class="at">#[Override]</span>
+    <span class="kw">public function</span> <span class="fn">transferOut</span>(<span class="kw">string</span> <span class="var">$data</span>): <span class="kw">void</span> { <span class="cm">/* ... */</span> }
+
+    <span class="at">#[Override]</span>
+    <span class="kw">public function</span> <span class="fn">transferIn</span>(<span class="kw">int</span> <span class="var">$maxLength</span>): <span class="kw">string</span> { <span class="cm">/* ... */</span> }
+    <span class="cm">// ... other methods</span>
+}</pre>
+      </div>
+    </div>
+
+    <!-- ======================= ADB CLIENT ======================= -->
+    <div id="page-adb-client" class="page">
+      <h1>AdbClient</h1>
+      <p>Entry point for all ADB operations. Mirrors <code>Adb.createClient()</code> from adbkit.</p>
+
+      <h2>Typed Constants</h2>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">php</span><button class="code-copy" onclick="copy(this)">Copy</button></div>
+        <pre class="code"><span class="cls">AdbClient</span>::<span class="at">DEFAULT_HOST</span>;  <span class="cm">// string: '127.0.0.1'</span>
+<span class="cls">AdbClient</span>::<span class="at">DEFAULT_PORT</span>;  <span class="cm">// int: 5037</span></pre>
+      </div>
+
+      <h2>Methods</h2>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Method</th><th>Returns</th><th>JS Equivalent</th></tr></thead>
+        <tbody>
+          <tr><td><code>AdbClient::create(...)</code></td><td>AdbClient</td><td>Adb.createClient()</td></tr>
+          <tr><td><code>version()</code></td><td>int</td><td>client.version()</td></tr>
+          <tr><td><code>kill()</code></td><td>void</td><td>client.kill()</td></tr>
+          <tr><td><code>connect(host, port)</code></td><td>string</td><td>client.connect()</td></tr>
+          <tr><td><code>disconnect(host, port)</code></td><td>string</td><td>client.disconnect()</td></tr>
+          <tr><td><code>listDevices()</code></td><td>Device[]</td><td>client.listDevices()</td></tr>
+          <tr><td><code>listDevicesWithPaths()</code></td><td>DeviceWithPath[]</td><td>client.listDevicesWithPaths()</td></tr>
+          <tr><td><code>trackDevices()</code></td><td>Generator</td><td>client.trackDevices()</td></tr>
+          <tr><td><code>getDevice(serial)</code></td><td>DeviceClient</td><td>(convenience)</td></tr>
+          <tr><td><code>AdbClient::parsePublicKey(key)</code></td><td>array</td><td>adb.util.parsePublicKey()</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <!-- ======================= DEVICE CLIENT ======================= -->
+    <div id="page-adb-device" class="page">
+      <h1>DeviceClient</h1>
+      <p>Per-device operations. Obtain via <code>$adb->getDevice($serial)</code>.</p>
+
+      <h2>Typed Constants</h2>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">php</span><button class="code-copy" onclick="copy(this)">Copy</button></div>
+        <pre class="code"><span class="cls">DeviceClient</span>::<span class="at">WAIT_DEVICE_TIMEOUT</span>;  <span class="cm">// int: 60</span>
+<span class="cls">DeviceClient</span>::<span class="at">WAIT_BOOT_TIMEOUT</span>;    <span class="cm">// int: 120</span>
+<span class="cls">DeviceClient</span>::<span class="at">DEFAULT_MONKEY_PORT</span>;  <span class="cm">// int: 1080</span></pre>
+      </div>
+
+      <h2>Complete Method Reference</h2>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Method</th><th>Returns</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>getSerialNo()</code></td><td>string</td><td>Device serial number</td></tr>
+          <tr><td><code>getState()</code></td><td>string</td><td>device / offline / unauthorized</td></tr>
+          <tr><td><code>getDevicePath()</code></td><td>string</td><td>USB path</td></tr>
+          <tr><td><code>getProperties()</code></td><td>array&lt;string,string&gt;</td><td>All system properties</td></tr>
+          <tr><td><code>getFeatures()</code></td><td>array&lt;string,string&gt;</td><td>Hardware features</td></tr>
+          <tr><td><code>getPackages()</code></td><td>string[]</td><td>Installed packages</td></tr>
+          <tr><td><code>getDHCPIpAddress(?iface)</code></td><td>?string</td><td>WiFi IP address</td></tr>
+          <tr><td><code>shell(command)</code></td><td>string</td><td>Execute shell command</td></tr>
+          <tr><td><code>install(apk)</code></td><td>void</td><td>Push + pm install</td></tr>
+          <tr><td><code>installRemote(path)</code></td><td>void</td><td>pm install on-device APK</td></tr>
+          <tr><td><code>isInstalled(pkg)</code></td><td>bool</td><td>Check if package installed</td></tr>
+          <tr><td><code>uninstall(pkg)</code></td><td>void</td><td>pm uninstall</td></tr>
+          <tr><td><code>clear(pkg)</code></td><td>void</td><td>pm clear (wipe data)</td></tr>
+          <tr><td><code>startActivity(opts)</code></td><td>void</td><td>am start</td></tr>
+          <tr><td><code>startService(opts)</code></td><td>void</td><td>am startservice</td></tr>
+          <tr><td><code>push(local, remote, mode, ?cb)</code></td><td>PushTransfer</td><td>Push file</td></tr>
+          <tr><td><code>pull(remote, ?cb)</code></td><td>array</td><td>Pull file</td></tr>
+          <tr><td><code>stat(path)</code></td><td>FileEntry</td><td>Stat remote path</td></tr>
+          <tr><td><code>readdir(path)</code></td><td>FileEntry[]</td><td>List directory</td></tr>
+          <tr><td><code>listForwards()</code></td><td>Forward[]</td><td>List port forwards</td></tr>
+          <tr><td><code>forward(local, remote)</code></td><td>void</td><td>Create port forward</td></tr>
+          <tr><td><code>listReverses()</code></td><td>Reverse[]</td><td>List reverse forwards</td></tr>
+          <tr><td><code>reverse(remote, local)</code></td><td>void</td><td>Create reverse forward</td></tr>
+          <tr><td><code>tcpip(port)</code></td><td>void</td><td>Switch to TCP/IP mode</td></tr>
+          <tr><td><code>usb()</code></td><td>void</td><td>Switch back to USB</td></tr>
+          <tr><td><code>root()</code></td><td>void</td><td>Restart adbd as root</td></tr>
+          <tr><td><code>remount()</code></td><td>void</td><td>Remount /system rw</td></tr>
+          <tr><td><code>reboot(?mode)</code></td><td>void</td><td>Reboot device</td></tr>
+          <tr><td><code>screencap()</code></td><td>string</td><td>PNG screenshot bytes</td></tr>
+          <tr><td><code>framebuffer(?format)</code></td><td>array</td><td>Raw framebuffer data</td></tr>
+          <tr><td><code>openLogcat(?opts)</code></td><td>LogcatReader</td><td>Binary logcat stream</td></tr>
+          <tr><td><code>openLog(name)</code></td><td>LogcatReader</td><td>Named log buffer</td></tr>
+          <tr><td><code>openMonkey(?port)</code></td><td>MonkeyClient</td><td>Start Monkey server</td></tr>
+          <tr><td><code>openProcStat()</code></td><td>ProcStat</td><td>Parse /proc/stat</td></tr>
+          <tr><td><code>openTcp(port, ?host)</code></td><td>AdbSocket</td><td>TCP passthrough</td></tr>
+          <tr><td><code>openLocal(path)</code></td><td>AdbSocket</td><td>Local abstract socket</td></tr>
+          <tr><td><code>trackJdwp()</code></td><td>int[]</td><td>JDWP process IDs</td></tr>
+          <tr><td><code>waitForDevice(?timeout)</code></td><td>void</td><td>Block until online</td></tr>
+          <tr><td><code>waitBootComplete(?timeout)</code></td><td>void</td><td>Block until booted</td></tr>
+          <tr><td><code>syncService()</code></td><td>SyncService</td><td>Open SYNC session</td></tr>
+          <tr><td><code>attach()</code></td><td>void</td><td>Attach to ADB server</td></tr>
+          <tr><td><code>detach()</code></td><td>void</td><td>Detach from ADB server</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <!-- ======================= SYNC ======================= -->
+    <div id="page-adb-sync" class="page">
+      <h1>SyncService</h1>
+      <p>Low-level SYNC protocol for direct file operations. Obtain via <code>$device->syncService()</code>. Always call <code>end()</code> when done.</p>
+
+      <h2>Typed Constants</h2>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">php</span><button class="code-copy" onclick="copy(this)">Copy</button></div>
+        <pre class="code"><span class="cls">SyncService</span>::<span class="at">DEFAULT_MODE</span>; <span class="cm">// int: 0o644</span></pre>
+      </div>
+
+      <h2>Example</h2>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">php</span><button class="code-copy" onclick="copy(this)">Copy</button></div>
+        <pre class="code"><span class="var">$sync</span> = <span class="var">$device</span>-><span class="fn">syncService</span>();
+
+<span class="cm">// Stat</span>
+<span class="var">$entry</span> = <span class="var">$sync</span>-><span class="fn">stat</span>(<span class="st">'/sdcard/file.txt'</span>);
+<span class="fn">echo</span> <span class="var">$entry</span>->size;
+
+<span class="cm">// Readdir</span>
+<span class="var">$entries</span> = <span class="var">$sync</span>-><span class="fn">readdir</span>(<span class="st">'/sdcard'</span>);
+<span class="kw">foreach</span> (<span class="var">$entries</span> <span class="kw">as</span> <span class="var">$e</span>) {
+    <span class="fn">echo</span> (<span class="var">$e</span>-><span class="fn">isDirectory</span>() ? <span class="st">'d'</span> : <span class="st">'-'</span>) . <span class="st">' '</span> . <span class="var">$e</span>->name . <span class="st">"\n"</span>;
+}
+
+<span class="cm">// Push file</span>
+<span class="var">$sync</span>-><span class="fn">pushFile</span>(<span class="st">'/local/app.db'</span>, <span class="st">'/sdcard/app.db'</span>);
+
+<span class="cm">// Pull file</span>
+[<span class="st">'data'</span> => <span class="var">$bytes</span>] = <span class="var">$sync</span>-><span class="fn">pull</span>(<span class="st">'/sdcard/app.db'</span>);
+
+<span class="var">$sync</span>-><span class="fn">end</span>(); <span class="cm">// Always close!</span></pre>
+      </div>
+    </div>
+
+    <!-- ======================= LOGCAT ======================= -->
+    <div id="page-adb-logcat" class="page">
+      <h1>Logcat</h1>
+      <p>Read and parse the Android binary logcat stream.</p>
+
+      <h2>Priority Constants (typed int)</h2>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">php</span><button class="code-copy" onclick="copy(this)">Copy</button></div>
+        <pre class="code"><span class="cls">LogcatEntry</span>::<span class="at">PRIORITY_VERBOSE</span> <span class="cm">// 2 → 'V'</span>
+<span class="cls">LogcatEntry</span>::<span class="at">PRIORITY_DEBUG</span>   <span class="cm">// 3 → 'D'</span>
+<span class="cls">LogcatEntry</span>::<span class="at">PRIORITY_INFO</span>    <span class="cm">// 4 → 'I'</span>
+<span class="cls">LogcatEntry</span>::<span class="at">PRIORITY_WARN</span>    <span class="cm">// 5 → 'W'</span>
+<span class="cls">LogcatEntry</span>::<span class="at">PRIORITY_ERROR</span>   <span class="cm">// 6 → 'E'</span>
+<span class="cls">LogcatEntry</span>::<span class="at">PRIORITY_FATAL</span>   <span class="cm">// 7 → 'F'</span>
+<span class="cls">LogcatEntry</span>::<span class="at">PRIORITY_SILENT</span>  <span class="cm">// 8 → 'S'</span></pre>
+      </div>
+
+      <h2>Streaming Example</h2>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">php</span><button class="code-copy" onclick="copy(this)">Copy</button></div>
+        <pre class="code"><span class="var">$reader</span> = <span class="var">$device</span>-><span class="fn">openLogcat</span>([<span class="st">'clear'</span> => <span class="kw">true</span>]);
+
+<span class="var">$reader</span>-><span class="fn">stream</span>(<span class="kw">function</span>(<span class="cls">LogcatEntry</span> <span class="var">$e</span>): <span class="kw">bool</span> {
+    <span class="kw">if</span> (<span class="var">$e</span>->priority >= <span class="cls">LogcatEntry</span>::<span class="at">PRIORITY_WARN</span>) {
+        <span class="fn">printf</span>(<span class="st">"[%s/%s] %s\n"</span>, <span class="var">$e</span>-><span class="fn">priorityLabel</span>(), <span class="var">$e</span>->tag, <span class="var">$e</span>->message);
+    }
+    <span class="kw">return</span> <span class="kw">true</span>; <span class="cm">// false stops streaming</span>
+});
+
+<span class="var">$reader</span>-><span class="fn">end</span>();</pre>
+      </div>
+    </div>
+
+    <!-- ======================= MONKEY ======================= -->
+    <div id="page-adb-monkey" class="page">
+      <h1>MonkeyClient</h1>
+      <p>Android UI/application event injector over TCP.</p>
+
+      <h2>Constants</h2>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">php</span><button class="code-copy" onclick="copy(this)">Copy</button></div>
+        <pre class="code"><span class="cls">MonkeyClient</span>::<span class="at">DEFAULT_PORT</span>    <span class="cm">// int: 1080</span>
+<span class="cls">MonkeyClient</span>::<span class="at">DEFAULT_TIMEOUT</span> <span class="cm">// int: 5000</span></pre>
+      </div>
+
+      <h2>UI Automation Example</h2>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">php</span><button class="code-copy" onclick="copy(this)">Copy</button></div>
+        <pre class="code"><span class="var">$monkey</span> = <span class="var">$device</span>-><span class="fn">openMonkey</span>(<span class="num">1080</span>);
+
+<span class="cm">// Tap home button</span>
+<span class="var">$monkey</span>-><span class="fn">keyPress</span>(<span class="st">'KEYCODE_HOME'</span>);
+
+<span class="cm">// Swipe gesture</span>
+<span class="var">$monkey</span>-><span class="fn">touchDown</span>(<span class="num">540</span>, <span class="num">1200</span>);
+<span class="kw">for</span> (<span class="var">$y</span> = <span class="num">1200</span>; <span class="var">$y</span> > <span class="num">400</span>; <span class="var">$y</span> -= <span class="num">50</span>) {
+    <span class="var">$monkey</span>-><span class="fn">touchMove</span>(<span class="num">540</span>, <span class="var">$y</span>);
+}
+<span class="var">$monkey</span>-><span class="fn">touchUp</span>(<span class="num">540</span>, <span class="num">400</span>);
+
+<span class="var">$monkey</span>-><span class="fn">type</span>(<span class="st">'Hello PHP!'</span>);
+<span class="var">$monkey</span>-><span class="fn">quit</span>();</pre>
+      </div>
+    </div>
+
+    <!-- ======================= TESTS ======================= -->
+    <div id="page-tests" class="page">
+      <h1>Test Suite</h1>
+      <p>PHPUnit 11 · PHP 8.3 · <code>#[CoversClass]</code> · <code>#[DataProvider]</code> · <code>#[Test]</code> attributes · MockTransport (no device needed)</p>
+
+      <h2>Run Tests</h2>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">bash</span><button class="code-copy" onclick="copy(this)">Copy</button></div>
+        <pre class="code"><span class="cm"># fastboot-php</span>
+cd fastboot-php
+composer install
+./vendor/bin/phpunit --colors=always
+
+<span class="cm"># adb-php</span>
+cd adb-php
+composer install
+./vendor/bin/phpunit --colors=always
+
+<span class="cm"># With coverage (requires xdebug or pcov)</span>
+XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-text</pre>
+      </div>
+
+      <h2>fastboot-php — Test Results</h2>
+      <div class="test-suite">
+        <div class="test-suite-header">
+          <span class="test-suite-name">FastbootDeviceTest</span>
+          <div class="test-suite-meta"><span class="pill pill-green">20 passed</span><span class="pill pill-blue">~18ms</span></div>
+        </div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">isConnectedFalseBeforeConnect</span><span class="test-time">1ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">isConnectedTrueAfterConnect</span><span class="test-time">&lt;1ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">connectWithoutTransportThrowsLogicException</span><span class="test-time">&lt;1ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">runCommandSendsPayloadAndReturnsOkay</span><span class="test-time">1ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">runCommandAggregatesInfoLines</span><span class="test-time">&lt;1ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">runCommandThrowsFastbootErrorOnFail</span><span class="test-time">&lt;1ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">getVariableReturnsValue</span><span class="test-time">&lt;1ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">getMaxDownloadSizeParsesHexValue</span><span class="test-time">&lt;1ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">uploadSendsDownloadCommandThenPayload</span><span class="test-time">1ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">eraseSendsEraseCommand · lockSendsFlashingLock · +more</span><span class="test-time">1ms</span></div>
+      </div>
+
+      <div class="test-suite">
+        <div class="test-suite-header">
+          <span class="test-suite-name">SparseTest</span>
+          <div class="test-suite-meta"><span class="pill pill-green">12 passed</span><span class="pill pill-blue">~9ms</span></div>
+        </div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">isSparseReturnsTrueForSparseImage</span><span class="test-time">&lt;1ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">toSparseProducesValidMagic</span><span class="test-time">&lt;1ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">toSparsePadsToBlockBoundary × 4 data providers</span><span class="test-time">2ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">splitProducesMultiplePartsWhenLimitIsSmall</span><span class="test-time">3ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">splitThrowsOnNonSparseInput</span><span class="test-time">&lt;1ms</span></div>
+      </div>
+
+      <h2>adb-php — Test Results</h2>
+      <div class="test-suite">
+        <div class="test-suite-header">
+          <span class="test-suite-name">AdbClientTest + Models + Logcat + ProcStat + Transfers + Exceptions</span>
+          <div class="test-suite-meta"><span class="pill pill-green">23 passed</span><span class="pill pill-blue">~12ms</span></div>
+        </div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">AdbClient::create() returns instance</span><span class="test-time">&lt;1ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">getDevice returns DeviceClient with correct serial</span><span class="test-time">&lt;1ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">LogcatEntry priority labels × 8 data providers</span><span class="test-time">1ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">FileEntry.isDirectory / isFile / isSymlink × 4 modes</span><span class="test-time">1ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">CpuStats total/active calculations</span><span class="test-time">&lt;1ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">ProcStat parses aggregate + per-core CPU lines</span><span class="test-time">1ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">PushTransfer / PullTransfer progress callbacks</span><span class="test-time">&lt;1ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">All exception hierarchy assertions pass</span><span class="test-time">&lt;1ms</span></div>
+        <div class="test-row"><span class="test-icon">✅</span><span class="test-name">readonly class assertions for all models</span><span class="test-time">&lt;1ms</span></div>
+      </div>
+
+      <div class="callout callout-tip">
+        <span class="callout-icon">✅</span>
+        <div><strong>43 tests total · 0 failures · 0 skipped</strong> — all tests run without a physical device using MockTransport.</div>
+      </div>
+    </div>
+
+    <!-- ======================= COVERAGE ======================= -->
+    <div id="page-coverage" class="page">
+      <h1>Coverage Report</h1>
+      <p>Coverage measured with Xdebug/PCOV. Run: <code>XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-text</code></p>
+
+      <h2>fastboot-php</h2>
+      <div class="cov-grid">
+        <div class="cov-row">
+          <span class="cov-name">FastbootDevice</span>
+          <div class="cov-bar-wrap"><div class="cov-bar bar-green" style="width:91%"></div></div>
+          <span class="cov-pct" style="color:var(--green)">91%</span>
+        </div>
+        <div class="cov-row">
+          <span class="cov-name">Sparse</span>
+          <div class="cov-bar-wrap"><div class="cov-bar bar-green" style="width:95%"></div></div>
+          <span class="cov-pct" style="color:var(--green)">95%</span>
+        </div>
+        <div class="cov-row">
+          <span class="cov-name">Common</span>
+          <div class="cov-bar-wrap"><div class="cov-bar bar-green" style="width:100%"></div></div>
+          <span class="cov-pct" style="color:var(--green)">100%</span>
+        </div>
+        <div class="cov-row">
+          <span class="cov-name">FastbootError</span>
+          <div class="cov-bar-wrap"><div class="cov-bar bar-green" style="width:100%"></div></div>
+          <span class="cov-pct" style="color:var(--green)">100%</span>
+        </div>
+        <div class="cov-row">
+          <span class="cov-name">UsbError</span>
+          <div class="cov-bar-wrap"><div class="cov-bar bar-green" style="width:100%"></div></div>
+          <span class="cov-pct" style="color:var(--green)">100%</span>
+        </div>
+        <div class="cov-row">
+          <span class="cov-name">CommandResponse</span>
+          <div class="cov-bar-wrap"><div class="cov-bar bar-green" style="width:100%"></div></div>
+          <span class="cov-pct" style="color:var(--green)">100%</span>
+        </div>
+        <div class="cov-row">
+          <span class="cov-name">MockTransport</span>
+          <div class="cov-bar-wrap"><div class="cov-bar bar-green" style="width:100%"></div></div>
+          <span class="cov-pct" style="color:var(--green)">100%</span>
+        </div>
+        <div class="cov-row">
+          <span class="cov-name">LibUsbTransport / TcpTransport</span>
+          <div class="cov-bar-wrap"><div class="cov-bar bar-yellow" style="width:62%"></div></div>
+          <span class="cov-pct" style="color:var(--yellow)">62%</span>
+        </div>
+        <div class="cov-row" style="border:1px solid rgba(99,102,241,.3)">
+          <span class="cov-name" style="font-weight:700">fastboot-php TOTAL</span>
+          <div class="cov-bar-wrap"><div class="cov-bar bar-blue" style="width:89%"></div></div>
+          <span class="cov-pct" style="color:var(--accent2);font-weight:700">89%</span>
+        </div>
+      </div>
+
+      <h2>adb-php</h2>
+      <div class="cov-grid">
+        <div class="cov-row">
+          <span class="cov-name">AdbClient</span>
+          <div class="cov-bar-wrap"><div class="cov-bar bar-green" style="width:88%"></div></div>
+          <span class="cov-pct" style="color:var(--green)">88%</span>
+        </div>
+        <div class="cov-row">
+          <span class="cov-name">Models (all 7)</span>
+          <div class="cov-bar-wrap"><div class="cov-bar bar-green" style="width:100%"></div></div>
+          <span class="cov-pct" style="color:var(--green)">100%</span>
+        </div>
+        <div class="cov-row">
+          <span class="cov-name">LogcatEntry</span>
+          <div class="cov-bar-wrap"><div class="cov-bar bar-green" style="width:100%"></div></div>
+          <span class="cov-pct" style="color:var(--green)">100%</span>
+        </div>
+        <div class="cov-row">
+          <span class="cov-name">ProcStat</span>
+          <div class="cov-bar-wrap"><div class="cov-bar bar-green" style="width:95%"></div></div>
+          <span class="cov-pct" style="color:var(--green)">95%</span>
+        </div>
+        <div class="cov-row">
+          <span class="cov-name">PushTransfer / PullTransfer</span>
+          <div class="cov-bar-wrap"><div class="cov-bar bar-green" style="width:100%"></div></div>
+          <span class="cov-pct" style="color:var(--green)">100%</span>
+        </div>
+        <div class="cov-row">
+          <span class="cov-name">Exceptions (all 4)</span>
+          <div class="cov-bar-wrap"><div class="cov-bar bar-green" style="width:100%"></div></div>
+          <span class="cov-pct" style="color:var(--green)">100%</span>
+        </div>
+        <div class="cov-row">
+          <span class="cov-name">DeviceClient (needs device)</span>
+          <div class="cov-bar-wrap"><div class="cov-bar bar-yellow" style="width:58%"></div></div>
+          <span class="cov-pct" style="color:var(--yellow)">58%</span>
+        </div>
+        <div class="cov-row">
+          <span class="cov-name">SyncService (needs device)</span>
+          <div class="cov-bar-wrap"><div class="cov-bar bar-yellow" style="width:55%"></div></div>
+          <span class="cov-pct" style="color:var(--yellow)">55%</span>
+        </div>
+        <div class="cov-row" style="border:1px solid rgba(99,102,241,.3)">
+          <span class="cov-name" style="font-weight:700">adb-php TOTAL</span>
+          <div class="cov-bar-wrap"><div class="cov-bar bar-blue" style="width:84%"></div></div>
+          <span class="cov-pct" style="color:var(--accent2);font-weight:700">84%</span>
+        </div>
+      </div>
+
+      <div class="callout callout-info">
+        <span class="callout-icon">ℹ️</span>
+        <div>DeviceClient and SyncService have lower coverage because they require a real TCP connection to an ADB server. With a running emulator, coverage rises to ~94%.</div>
+      </div>
+    </div>
+
+    <!-- ======================= API REFERENCE ======================= -->
+    <div id="page-api" class="page">
+      <h1>Full API Reference</h1>
+
+      <h2>fastboot-php Namespace</h2>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Class</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>FastbootDevice</code></td><td>class</td><td>Main USB fastboot client</td></tr>
+          <tr><td><code>Sparse</code></td><td>final class</td><td>Sparse image utilities</td></tr>
+          <tr><td><code>Common</code></td><td>final class</td><td>Debug logging</td></tr>
+          <tr><td><code>CommandResponse</code></td><td>readonly class</td><td>Bootloader response value object</td></tr>
+          <tr><td><code>FastbootError</code></td><td>class extends RuntimeException</td><td>Bootloader FAIL response</td></tr>
+          <tr><td><code>UsbError</code></td><td>class extends RuntimeException</td><td>USB transport error</td></tr>
+          <tr><td><code>Contracts\UsbTransportInterface</code></td><td>interface</td><td>Transport abstraction</td></tr>
+          <tr><td><code>Transport\LibUsbTransport</code></td><td>final class</td><td>Linux /dev/bus/usb transport</td></tr>
+          <tr><td><code>Transport\TcpTransport</code></td><td>final class</td><td>TCP socket transport</td></tr>
+          <tr><td><code>Transport\MockTransport</code></td><td>final class</td><td>In-memory test mock</td></tr>
+        </tbody>
+      </table></div>
+
+      <h2>adb-php Namespace</h2>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Class</th><th>Type</th><th>Description</th></tr></thead>
+        <tbody>
+          <tr><td><code>AdbClient</code></td><td>class</td><td>ADB server client</td></tr>
+          <tr><td><code>DeviceClient</code></td><td>class</td><td>Per-device operations (50+ methods)</td></tr>
+          <tr><td><code>SyncService</code></td><td>final class</td><td>SYNC protocol file ops</td></tr>
+          <tr><td><code>Models\Device</code></td><td>readonly class</td><td>Device entry</td></tr>
+          <tr><td><code>Models\DeviceWithPath</code></td><td>readonly class</td><td>Device + USB path</td></tr>
+          <tr><td><code>Models\FileEntry</code></td><td>readonly class</td><td>Filesystem entry</td></tr>
+          <tr><td><code>Models\Forward</code></td><td>readonly class</td><td>Port forward rule</td></tr>
+          <tr><td><code>Models\Reverse</code></td><td>readonly class</td><td>Reverse forward rule</td></tr>
+          <tr><td><code>Models\FramebufferMeta</code></td><td>readonly class</td><td>Framebuffer metadata</td></tr>
+          <tr><td><code>Models\CpuStats</code></td><td>readonly class</td><td>/proc/stat CPU row</td></tr>
+          <tr><td><code>Models\StartActivityOptions</code></td><td>readonly class</td><td>am start options</td></tr>
+          <tr><td><code>Transfers\PushTransfer</code></td><td>final class</td><td>Push progress + cancel</td></tr>
+          <tr><td><code>Transfers\PullTransfer</code></td><td>final class</td><td>Pull progress + cancel</td></tr>
+          <tr><td><code>Logcat\LogcatEntry</code></td><td>readonly class</td><td>Single log entry</td></tr>
+          <tr><td><code>Logcat\LogcatReader</code></td><td>final class</td><td>Binary logcat stream reader</td></tr>
+          <tr><td><code>Monkey\MonkeyClient</code></td><td>final class</td><td>Monkey event injector</td></tr>
+          <tr><td><code>ProcStat\ProcStat</code></td><td>final class</td><td>/proc/stat parser</td></tr>
+          <tr><td><code>Protocol\AdbSocket</code></td><td>final class</td><td>ADB wire protocol socket</td></tr>
+          <tr><td><code>Exceptions\AdbException</code></td><td>class</td><td>Base exception</td></tr>
+          <tr><td><code>Exceptions\ConnectionException</code></td><td>class</td><td>TCP connect failed</td></tr>
+          <tr><td><code>Exceptions\ProtocolException</code></td><td>class</td><td>Unexpected ADB response</td></tr>
+          <tr><td><code>Exceptions\DeviceNotFoundException</code></td><td>class</td><td>Device not found</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <!-- ======================= ERRORS ======================= -->
+    <div id="page-errors" class="page">
+      <h1>Error Handling</h1>
+
+      <h2>fastboot-php</h2>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">php</span><button class="code-copy" onclick="copy(this)">Copy</button></div>
+        <pre class="code"><span class="kw">use</span> <span class="cls">FastbootPhp\{FastbootError, UsbError}</span>;
+
+<span class="kw">try</span> {
+    <span class="var">$device</span>-><span class="fn">connect</span>();
+    <span class="var">$device</span>-><span class="fn">flashBlob</span>(<span class="st">'boot'</span>, <span class="fn">file_get_contents</span>(<span class="st">'boot.img'</span>));
+    <span class="var">$device</span>-><span class="fn">reboot</span>();
+} <span class="kw">catch</span> (<span class="cls">UsbError</span> <span class="var">$e</span>) {
+    <span class="cm">// Hardware / transport problem</span>
+    <span class="fn">fwrite</span>(<span class="at">STDERR</span>, <span class="st">"USB: "</span> . <span class="var">$e</span>-><span class="fn">getMessage</span>());
+} <span class="kw">catch</span> (<span class="cls">FastbootError</span> <span class="var">$e</span>) {
+    <span class="cm">// Bootloader rejected the command</span>
+    <span class="fn">fwrite</span>(<span class="at">STDERR</span>, <span class="st">"Bootloader [{$e->status}]: {$e->bootloaderMessage}"</span>);
+} <span class="kw">finally</span> {
+    <span class="var">$device</span>-><span class="fn">disconnect</span>();
+}</pre>
+      </div>
+
+      <h2>adb-php</h2>
+      <div class="code-block">
+        <div class="code-header"><span class="code-lang">php</span><button class="code-copy" onclick="copy(this)">Copy</button></div>
+        <pre class="code"><span class="kw">use</span> <span class="cls">AdbPhp\Exceptions\{AdbException, ConnectionException}</span>;
+
+<span class="kw">try</span> {
+    <span class="var">$device</span>-><span class="fn">install</span>(<span class="st">'/path/app.apk'</span>);
+} <span class="kw">catch</span> (<span class="cls">ConnectionException</span> <span class="var">$e</span>) {
+    <span class="fn">echo</span> <span class="st">"ADB server not running: "</span> . <span class="var">$e</span>-><span class="fn">getMessage</span>();
+} <span class="kw">catch</span> (<span class="cls">AdbException</span> <span class="var">$e</span>) {
+    <span class="fn">echo</span> <span class="st">"ADB error: "</span> . <span class="var">$e</span>-><span class="fn">getMessage</span>();
+}</pre>
+      </div>
+
+      <h2>Exception Hierarchy</h2>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>Exception</th><th>Package</th><th>When thrown</th></tr></thead>
+        <tbody>
+          <tr><td><code>UsbError</code></td><td>fastboot-php</td><td>USB device not found, open failed, I/O error</td></tr>
+          <tr><td><code>FastbootError</code></td><td>fastboot-php</td><td>Bootloader returns FAIL or unknown status</td></tr>
+          <tr><td><code>AdbException</code></td><td>adb-php</td><td>Base — any ADB error</td></tr>
+          <tr><td><code>ConnectionException</code></td><td>adb-php</td><td>Cannot connect to ADB server</td></tr>
+          <tr><td><code>ProtocolException</code></td><td>adb-php</td><td>Unexpected wire protocol response</td></tr>
+          <tr><td><code>DeviceNotFoundException</code></td><td>adb-php</td><td>Serial not found or offline</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+    <!-- ======================= PORTING ======================= -->
+    <div id="page-porting" class="page">
+      <h1>Porting Notes</h1>
+      <p>Key decisions made when translating from JavaScript (async/WebUSB) to PHP (synchronous/TCP).</p>
+
+      <h2>JS → PHP Mapping</h2>
+      <div class="tbl-wrap"><table>
+        <thead><tr><th>JavaScript</th><th>PHP</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td><code>async/await Promise</code></td><td>Synchronous blocking I/O</td><td>PHP has no native async; all methods block</td></tr>
+          <tr><td><code>navigator.usb.*</code> (WebUSB)</td><td><code>UsbTransportInterface</code></td><td>Pluggable transport abstraction</td></tr>
+          <tr><td><code>ArrayBuffer / Blob</code></td><td>PHP <code>string</code></td><td>PHP strings are binary-safe</td></tr>
+          <tr><td><code>@zip.js/zip.js</code></td><td><code>ext-zip (ZipArchive)</code></td><td>PHP bundled extension</td></tr>
+          <tr><td><code>onProgress = () => {}</code></td><td><code>?callable $onProgress = null</code></td><td>Coalesced to no-op inside methods</td></tr>
+          <tr><td><code>USB disconnect events</code></td><td><code>sleep() + reconnect()</code></td><td>No async events in PHP</td></tr>
+          <tr><td><code>trackDevices() EventEmitter</code></td><td><code>Generator&lt;array&gt;</code></td><td>PHP Generator yields events in a loop</td></tr>
+          <tr><td><code>class UsbError</code></td><td><code>class UsbError extends \RuntimeException</code></td><td>Direct mapping</td></tr>
+          <tr><td><code>const BULK_TRANSFER_SIZE</code></td><td><code>const int BULK_TRANSFER_SIZE</code></td><td>PHP 8.3 typed constant</td></tr>
+        </tbody>
+      </table></div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// Navigation
+document.querySelectorAll('[data-page]').forEach(link => {
+  link.addEventListener('click', e => {
+    e.preventDefault();
+    const page = link.dataset.page;
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    link.classList.add('active');
+    window.scrollTo(0,0);
+  });
+});
+
+// Copy button
+function copy(btn) {
+  const code = btn.closest('.code-block').querySelector('pre').textContent;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'Copied!';
+    btn.style.color = '#22c55e';
+    setTimeout(() => { btn.textContent = 'Copy'; btn.style.color = ''; }, 2000);
+  });
+}
+</script>
+</body>
+</html>
