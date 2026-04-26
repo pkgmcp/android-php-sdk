@@ -1,0 +1,1083 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Android PHP SDK — Interactive Demo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root{--bg:#06060b;--bg2:#0c0c14;--bg3:#12121e;--bg4:#1a1a2a;--border:#1e1e30;--border2:#2a2a40;--accent:#6366f1;--accent2:#818cf8;--accent3:#4f46e5;--green:#22c55e;--red:#ef4444;--yellow:#f59e0b;--cyan:#06b6d4;--text:#e2e8f0;--text2:#94a3b8;--text3:#64748b;}
+    *{box-sizing:border-box;margin:0;padding:0}
+    html{background:var(--bg);color:var(--text);font-family:'Inter',sans-serif}
+    body{min-height:100vh}
+    code,.mono{font-family:'JetBrains Mono',monospace}
+    ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-track{background:var(--bg)}::-webkit-scrollbar-thumb{background:var(--border2);border-radius:3px}
+
+    .layout{display:flex;min-height:100vh}
+    .sidebar{width:240px;flex-shrink:0;background:var(--bg2);border-right:1px solid var(--border);position:sticky;top:0;height:100vh;overflow-y:auto}
+    .main{flex:1;min-width:0;padding:2rem 2.5rem 4rem}
+
+    /* Nav */
+    .logo{padding:1.25rem 1.25rem;border-bottom:1px solid var(--border)}
+    .logo h1{font-size:1rem;font-weight:700;letter-spacing:-.03em}
+    .logo span{font-size:.65rem;color:var(--text3);display:block;margin-top:.15rem}
+    .nav-section{padding:.75rem 0 .25rem;font-size:.6rem;font-weight:600;letter-spacing:.12em;text-transform:uppercase;color:var(--text3);padding-left:1.25rem}
+    .nav-item{display:flex;align-items:center;gap:.5rem;padding:.38rem 1.25rem .38rem 1.5rem;font-size:.8rem;color:var(--text2);cursor:pointer;transition:.15s;border-left:2px solid transparent;text-decoration:none}
+    .nav-item:hover{color:var(--text);background:rgba(99,102,241,.05)}
+    .nav-item.active{color:var(--accent2);border-left-color:var(--accent);background:rgba(99,102,241,.07);font-weight:500}
+    .nav-icon{font-size:.9rem;width:20px;text-align:center}
+
+    /* Content */
+    .page{display:none}.page.active{display:block}
+    h2{font-size:1.35rem;font-weight:700;letter-spacing:-.03em;margin-bottom:.25rem}
+    h3{font-size:.95rem;font-weight:600;margin:1.25rem 0 .5rem;color:var(--accent2)}
+    p{color:var(--text2);font-size:.85rem;line-height:1.65;margin-bottom:.75rem}
+
+    /* Cards */
+    .card{background:var(--bg3);border:1px solid var(--border);border-radius:10px;padding:1.25rem;margin-bottom:1rem}
+    .card:hover{border-color:var(--border2)}
+    .card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem}
+    .card-title{font-size:.85rem;font-weight:600}
+    .badge{font-size:.65rem;padding:.15rem .5rem;border-radius:9999px;font-weight:500}
+    .badge-green{background:rgba(34,197,94,.12);color:var(--green)}
+    .badge-red{background:rgba(239,68,68,.12);color:var(--red)}
+    .badge-blue{background:rgba(99,102,241,.12);color:var(--accent2)}
+    .badge-yellow{background:rgba(245,158,11,.12);color:var(--yellow)}
+
+    /* Form */
+    .field{margin-bottom:.75rem}
+    .field label{display:block;font-size:.75rem;font-weight:500;color:var(--text2);margin-bottom:.3rem}
+    input[type="text"],input[type="number"],select,textarea{width:100%;background:var(--bg4);border:1px solid var(--border);border-radius:7px;padding:.5rem .75rem;font-size:.82rem;color:var(--text);font-family:'Inter',sans-serif;outline:none;transition:.15s}
+    input:focus,select:focus,textarea:focus{border-color:var(--accent);box-shadow:0 0 0 2px rgba(99,102,241,.15)}
+    textarea{resize:vertical;min-height:80px;font-family:'JetBrains Mono',monospace;font-size:.78rem;line-height:1.6}
+    select{cursor:pointer}
+
+    /* Buttons */
+    .btn{display:inline-flex;align-items:center;gap:.4rem;padding:.5rem 1rem;border-radius:7px;font-size:.8rem;font-weight:500;cursor:pointer;border:1px solid;transition:.15s}
+    .btn:hover{transform:translateY(-1px)}
+    .btn:active{transform:translateY(0)}
+    .btn-primary{background:var(--accent3);border-color:var(--accent3);color:#fff}
+    .btn-primary:hover{background:var(--accent);border-color:var(--accent)}
+    .btn-secondary{background:transparent;border-color:var(--border2);color:var(--text2)}
+    .btn-secondary:hover{border-color:var(--text3);color:var(--text)}
+    .btn-danger{background:transparent;border-color:rgba(239,68,68,.3);color:var(--red)}
+    .btn-danger:hover{background:rgba(239,68,68,.1)}
+    .btn:disabled{opacity:.4;pointer-events:none}
+    .btn-sm{padding:.3rem .65rem;font-size:.72rem}
+
+    /* Output */
+    .output{background:var(--bg);border:1px solid var(--border);border-radius:7px;padding:.75rem 1rem;font-family:'JetBrains Mono',monospace;font-size:.76rem;line-height:1.7;color:var(--text2);max-height:400px;overflow-y:auto;white-space:pre-wrap;word-break:break-all}
+    .output .ok{color:var(--green)}
+    .output .err{color:var(--red)}
+    .output .info{color:var(--cyan)}
+
+    /* Grid */
+    .grid-2{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:.75rem}
+    .grid-3{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:.75rem}
+
+    /* Stat */
+    .stat{text-align:center;padding:1rem;background:var(--bg3);border:1px solid var(--border);border-radius:8px}
+    .stat-value{font-size:1.5rem;font-weight:700;color:var(--accent2)}
+    .stat-label{font-size:.7rem;color:var(--text3);margin-top:.2rem}
+
+    /* Guide */
+    .guide-step{display:flex;gap:.75rem;margin-bottom:.75rem;padding:.75rem;background:var(--bg3);border:1px solid var(--border);border-radius:8px}
+    .guide-num{width:28px;height:28px;background:rgba(99,102,241,.12);border:1px solid rgba(99,102,241,.25);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.72rem;font-weight:700;color:var(--accent2);flex-shrink:0}
+    .guide-body{flex:1}
+    .guide-title{font-size:.82rem;font-weight:600;margin-bottom:.2rem}
+    .guide-desc{font-size:.75rem;color:var(--text3);line-height:1.55}
+
+    /* Device card */
+    .device-card{display:flex;align-items:center;gap:.75rem;padding:.75rem;background:var(--bg3);border:1px solid var(--border);border-radius:8px;cursor:pointer;transition:.15s}
+    .device-card:hover{border-color:var(--accent);background:rgba(99,102,241,.04)}
+    .device-card.selected{border-color:var(--accent);background:rgba(99,102,241,.06)}
+    .device-icon{font-size:1.5rem}
+    .device-name{font-size:.82rem;font-weight:600}
+    .device-status{font-size:.72rem;color:var(--text3)}
+
+    /* Spinner */
+    .spinner{display:inline-block;width:14px;height:14px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite}
+    @keyframes spin{to{transform:rotate(360deg)}}
+
+    /* Animations */
+    @keyframes fadeIn{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+    .page.active{animation:fadeIn .2s ease}
+
+    /* Screenshot */
+    .screenshot-img{max-width:100%;border-radius:8px;border:1px solid var(--border)}
+
+    /* Table */
+    .tbl{width:100%;border-collapse:collapse;font-size:.8rem}
+    .tbl th{text-align:left;padding:.5rem .75rem;font-weight:600;font-size:.7rem;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;border-bottom:1px solid var(--border)}
+    .tbl td{padding:.45rem .75rem;color:var(--text2);border-bottom:1px solid var(--border)}
+    .tbl tr:last-child td{border-bottom:none}
+    .tbl code{background:rgba(99,102,241,.08);color:var(--accent2);padding:.1rem .3rem;border-radius:.2rem;font-size:.76rem}
+
+    /* Mobile */
+    @media(max-width:768px){.sidebar{display:none}.main{padding:1rem}}
+  </style>
+</head>
+<body>
+<div class="layout">
+  <!-- Sidebar -->
+  <aside class="sidebar">
+    <div class="logo">
+      <h1>📱 Android PHP SDK</h1>
+      <span>Interactive Demo Panel</span>
+    </div>
+    <nav>
+      <div class="nav-section">Getting Started</div>
+      <a class="nav-item active" data-page="overview"><span class="nav-icon">🏠</span> Overview</a>
+      <a class="nav-item" data-page="guide"><span class="nav-icon">📖</span> How It Works</a>
+
+      <div class="nav-section">Devices</div>
+      <a class="nav-item" data-page="devices"><span class="nav-icon">📱</span> Device List</a>
+      <a class="nav-item" data-page="info"><span class="nav-icon">ℹ️</span> Device Info</a>
+
+      <div class="nav-section">ADB Operations</div>
+      <a class="nav-item" data-page="shell"><span class="nav-icon">💻</span> Shell</a>
+      <a class="nav-item" data-page="install"><span class="nav-icon">📦</span> Install / Uninstall</a>
+      <a class="nav-item" data-page="files"><span class="nav-icon">📁</span> File Manager</a>
+      <a class="nav-item" data-page="screen"><span class="nav-icon">🖥️</span> Screen</a>
+      <a class="nav-item" data-page="forward"><span class="nav-icon">🔀</span> Port Forward</a>
+      <a class="nav-item" data-page="system"><span class="nav-icon">⚙️</span> System</a>
+
+      <div class="nav-section">Fastboot</div>
+      <a class="nav-item" data-page="fastboot"><span class="nav-icon">⚡</span> Fastboot</a>
+
+      <div class="nav-section">Wireless</div>
+      <a class="nav-item" data-page="wireless"><span class="nav-icon">📡</span> Wireless ADB</a>
+    </nav>
+  </aside>
+
+  <!-- Main -->
+  <main class="main">
+
+    <!-- ==================== OVERVIEW ==================== -->
+    <div id="page-overview" class="page active">
+      <h2>📱 Android PHP SDK Demo</h2>
+      <p>Interactive web interface for <strong>fastboot-php</strong> and <strong>adb-php</strong> — pure PHP 8.3 implementations of Android Fastboot and ADB protocols.</p>
+
+      <div class="grid-3" style="margin:1rem 0 1.5rem">
+        <div class="stat">
+          <div class="stat-value">170</div>
+          <div class="stat-label">Tests</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">54+</div>
+          <div class="stat-label">ADB Methods</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">18</div>
+          <div class="stat-label">Fastboot Methods</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">0</div>
+          <div class="stat-label">Native Extensions</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">0</div>
+          <div class="stat-label">Shell exec Calls</div>
+        </div>
+        <div class="stat">
+          <div class="stat-value">8.3+</div>
+          <div class="stat-label">PHP Required</div>
+        </div>
+      </div>
+
+      <h3>Server Status</h3>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">ADB Server</span>
+          <button class="btn btn-sm btn-secondary" onclick="checkServer()">Check</button>
+        </div>
+        <div id="server-status" class="output">Click "Check" to verify ADB server connection...</div>
+      </div>
+
+      <h3>Quick Device Overview</h3>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Connected Devices</span>
+          <button class="btn btn-sm btn-primary" onclick="refreshDevices()">Refresh</button>
+        </div>
+        <div id="overview-devices" class="output">Click "Refresh" to list connected devices...</div>
+      </div>
+    </div>
+
+    <!-- ==================== GUIDE ==================== -->
+    <div id="page-guide" class="page">
+      <h2>📖 How It Works</h2>
+      <p>Step-by-step guide to using the demo panel with your Android device.</p>
+
+      <h3>Prerequisites</h3>
+      <div class="card">
+        <div class="guide-step">
+          <div class="guide-num">1</div>
+          <div class="guide-body">
+            <div class="guide-title">Enable Developer Options</div>
+            <div class="guide-desc">Go to Settings → About phone → Tap "Build number" 7 times.</div>
+          </div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-num">2</div>
+          <div class="guide-body">
+            <div class="guide-title">Enable USB Debugging</div>
+            <div class="guide-desc">Settings → Developer options → USB debugging → Enable.</div>
+          </div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-num">3</div>
+          <div class="guide-body">
+            <div class="guide-title">Start ADB Server</div>
+            <div class="guide-desc"><code class="mono">adb start-server</code> on your computer. Connect device via USB.</div>
+          </div>
+        </div>
+        <div class="guide-step">
+          <div class="guide-num">4</div>
+          <div class="guide-body">
+            <div class="guide-title">Authorize the Connection</div>
+            <div class="guide-desc">On your device, tap "Allow" on the USB debugging prompt.</div>
+          </div>
+        </div>
+      </div>
+
+      <h3>Using Each Section</h3>
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">📱 Device List</div>
+          <p>See all connected devices, their state (device/offline/unauthorized), and USB paths.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">ℹ️ Device Info</div>
+          <p>Get detailed info: model, Android version, SDK, CPU ABI, IP address, manufacturer.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">💻 Shell</div>
+          <p>Run any shell command on the device: <code class="mono">uname -a</code>, <code class="mono">ls /sdcard</code>, <code class="mono">getprop</code>, etc.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">📦 Install / Uninstall</div>
+          <p>Install APK files, uninstall packages, clear app data, check if a package is installed.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">📁 File Manager</div>
+          <p>Browse device files, push files to device, pull files from device, stat files and directories.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">🖥️ Screen</div>
+          <p>Take screenshots and view them directly in the browser. Get framebuffer metadata.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">🔀 Port Forward</div>
+          <p>Create and list port forwards and reverse forwards between host and device.</p>
+        </div>
+        <div class="card">
+          <div class="card-title">⚡ Fastboot</div>
+          <p>Flash partitions, erase data, lock/unlock bootloader, reboot — all via the web UI.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== DEVICES ==================== -->
+    <div id="page-devices" class="page">
+      <h2>📱 Device List</h2>
+      <p>All devices connected to the ADB server.</p>
+      <div class="card">
+        <div class="card-header">
+          <span class="card-title">Connected Devices</span>
+          <div style="display:flex;gap:.5rem">
+            <button class="btn btn-sm btn-secondary" onclick="listDevices()">Basic List</button>
+            <button class="btn btn-sm btn-primary" onclick="listDevicesPaths()">With Paths</button>
+          </div>
+        </div>
+        <div id="device-list-output" class="output">Click a button to list devices...</div>
+      </div>
+      <div id="device-cards" class="grid-2" style="margin-top:.75rem"></div>
+    </div>
+
+    <!-- ==================== INFO ==================== -->
+    <div id="page-info" class="page">
+      <h2>ℹ️ Device Info</h2>
+      <p>Detailed information about the selected device.</p>
+
+      <div class="card">
+        <div class="field">
+          <label>Device Serial</label>
+          <div style="display:flex;gap:.5rem">
+            <input type="text" id="info-serial" placeholder="e.g. emulator-5554 or 192.168.1.10:5555"/>
+            <button class="btn btn-primary" onclick="getDeviceInfo()">Get Info</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid-3" id="info-stats" style="display:none;margin:1rem 0">
+        <div class="stat"><div class="stat-value" id="info-model">—</div><div class="stat-label">Model</div></div>
+        <div class="stat"><div class="stat-value" id="info-android">—</div><div class="stat-label">Android</div></div>
+        <div class="stat"><div class="stat-value" id="info-sdk">—</div><div class="stat-label">SDK</div></div>
+        <div class="stat"><div class="stat-value" id="info-ab">—</div><div class="stat-label">CPU ABI</div></div>
+        <div class="stat"><div class="stat-value" id="info-ip">—</div><div class="stat-label">IP Address</div></div>
+        <div class="stat"><div class="stat-value" id="info-state">—</div><div class="stat-label">State</div></div>
+      </div>
+
+      <div class="card" id="info-full" style="display:none">
+        <div class="card-header">
+          <span class="card-title">Full Details</span>
+        </div>
+        <div id="info-output" class="output"></div>
+      </div>
+    </div>
+
+    <!-- ==================== SHELL ==================== -->
+    <div id="page-shell" class="page">
+      <h2>💻 Shell</h2>
+      <p>Run shell commands on the connected Android device.</p>
+
+      <div class="card">
+        <div class="field">
+          <label>Device Serial</label>
+          <input type="text" id="shell-serial" placeholder="e.g. emulator-5554"/>
+        </div>
+        <div class="field">
+          <label>Command</label>
+          <div style="display:flex;gap:.5rem">
+            <input type="text" id="shell-cmd" placeholder="e.g. uname -a" style="flex:1"/>
+            <button class="btn btn-primary" onclick="runShell()">▶ Run</button>
+          </div>
+        </div>
+        <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.75rem">
+          <button class="btn btn-sm btn-secondary" onclick="setShell('uname -a')">uname -a</button>
+          <button class="btn btn-sm btn-secondary" onclick="setShell('ls -la /sdcard')">ls /sdcard</button>
+          <button class="btn btn-sm btn-secondary" onclick="setShell('getprop ro.product.model')">model</button>
+          <button class="btn btn-sm btn-secondary" onclick="setShell('dumpsys battery')">battery</button>
+          <button class="btn btn-sm btn-secondary" onclick="setShell('pm list packages')">packages</button>
+          <button class="btn btn-sm btn-secondary" onclick="setShell('df -h')">disk</button>
+          <button class="btn btn-sm btn-secondary" onclick="setShell('cat /proc/meminfo | head -5')">memory</button>
+          <button class="btn btn-sm btn-secondary" onclick="setShell('ip addr show wlan0')">wifi</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">Output</div>
+        <div id="shell-output" class="output" style="min-height:120px">Run a command to see output here...</div>
+      </div>
+    </div>
+
+    <!-- ==================== INSTALL ==================== -->
+    <div id="page-install" class="page">
+      <h2>📦 Install / Uninstall</h2>
+      <p>Manage apps on your Android device.</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Install APK</div>
+          <div class="field" style="margin-top:.75rem">
+            <label>Device Serial</label>
+            <input type="text" id="install-serial" placeholder="e.g. emulator-5554"/>
+          </div>
+          <div class="field">
+            <label>APK Path (server-side)</label>
+            <input type="text" id="install-path" placeholder="/path/to/app.apk"/>
+          </div>
+          <button class="btn btn-primary" onclick="installApk()">📦 Install</button>
+          <div id="install-output" class="output" style="margin-top:.75rem;min-height:60px">Output will appear here...</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Uninstall / Clear</div>
+          <div class="field" style="margin-top:.75rem">
+            <label>Device Serial</label>
+            <input type="text" id="uninstall-serial" placeholder="e.g. emulator-5554"/>
+          </div>
+          <div class="field">
+            <label>Package Name</label>
+            <input type="text" id="uninstall-pkg" placeholder="com.example.app"/>
+          </div>
+          <div style="display:flex;gap:.5rem">
+            <button class="btn btn-danger btn-sm" onclick="uninstallPkg()">🗑️ Uninstall</button>
+            <button class="btn btn-secondary btn-sm" onclick="clearPkg()">🧹 Clear Data</button>
+            <button class="btn btn-secondary btn-sm" onclick="checkInstalled()">✅ Check</button>
+          </div>
+          <div id="uninstall-output" class="output" style="margin-top:.75rem;min-height:60px">Output will appear here...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== FILES ==================== -->
+    <div id="page-files" class="page">
+      <h2>📁 File Manager</h2>
+      <p>Browse, push, pull, and manage files on the device.</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Browse Directory</div>
+          <div class="field" style="margin-top:.75rem">
+            <label>Device Serial</label>
+            <input type="text" id="files-serial" placeholder="e.g. emulator-5554"/>
+          </div>
+          <div class="field">
+            <label>Remote Path</label>
+            <div style="display:flex;gap:.5rem">
+              <input type="text" id="files-path" value="/sdcard" style="flex:1"/>
+              <button class="btn btn-primary btn-sm" onclick="readdir()">📂 Open</button>
+            </div>
+          </div>
+          <div style="display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:.5rem">
+            <button class="btn btn-sm btn-secondary" onclick="setFilePath('/sdcard')">/sdcard</button>
+            <button class="btn btn-sm btn-secondary" onclick="setFilePath('/')">/</button>
+            <button class="btn btn-sm btn-secondary" onclick="setFilePath('/system')">/system</button>
+            <button class="btn btn-sm btn-secondary" onclick="setFilePath('/data/local/tmp')">/data/local/tmp</button>
+          </div>
+          <div id="files-output" class="output" style="min-height:100px">Open a directory to browse files...</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Push / Pull</div>
+          <div class="field" style="margin-top:.75rem">
+            <label>Local Path (server-side)</label>
+            <input type="text" id="push-local" placeholder="/tmp/file.txt"/>
+          </div>
+          <div class="field">
+            <label>Remote Path</label>
+            <input type="text" id="push-remote" placeholder="/sdcard/file.txt"/>
+          </div>
+          <div class="field">
+            <label>Permissions (octal)</label>
+            <input type="text" id="push-mode" value="644" style="width:80px"/>
+          </div>
+          <div style="display:flex;gap:.5rem">
+            <button class="btn btn-primary btn-sm" onclick="pushFile()">⬆️ Push</button>
+            <button class="btn btn-secondary btn-sm" onclick="pullFile()">⬇️ Pull</button>
+          </div>
+          <div id="files-transfer-output" class="output" style="margin-top:.75rem;min-height:40px">Transfer output...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SCREEN ==================== -->
+    <div id="page-screen" class="page">
+      <h2>🖥️ Screen</h2>
+      <p>Take screenshots and view framebuffer info.</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Screenshot</div>
+          <div class="field" style="margin-top:.75rem">
+            <label>Device Serial</label>
+            <input type="text" id="screen-serial" placeholder="e.g. emulator-5554"/>
+          </div>
+          <button class="btn btn-primary" onclick="takeScreenshot()">📸 Capture</button>
+          <div id="screenshot-area" style="margin-top:.75rem;text-align:center">
+            <p style="color:var(--text3);font-size:.78rem">Screenshot will appear here</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Framebuffer Info</div>
+          <div class="field" style="margin-top:.75rem">
+            <label>Device Serial</label>
+            <input type="text" id="fb-serial" placeholder="e.g. emulator-5554"/>
+          </div>
+          <div class="field">
+            <label>Format</label>
+            <select id="fb-format">
+              <option value="rgba">RGBA</option>
+              <option value="rgb">RGB</option>
+            </select>
+          </div>
+          <button class="btn btn-secondary" onclick="getFramebuffer()">Get Info</button>
+          <div id="fb-output" class="output" style="margin-top:.75rem;min-height:60px">Framebuffer metadata...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== PORT FORWARD ==================== -->
+    <div id="page-forward" class="page">
+      <h2>🔀 Port Forward</h2>
+      <p>Manage port forwarding rules between host and device.</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Forwards (host → device)</div>
+          <div class="field" style="margin-top:.75rem">
+            <label>Device Serial</label>
+            <input type="text" id="fwd-serial" placeholder="e.g. emulator-5554"/>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="listForwards()" style="margin-bottom:.75rem">List</button>
+          <div style="display:flex;gap:.5rem;margin-bottom:.75rem">
+            <input type="text" id="fwd-local" placeholder="tcp:8080" style="flex:1"/>
+            <input type="text" id="fwd-remote" placeholder="tcp:8080" style="flex:1"/>
+            <button class="btn btn-primary btn-sm" onclick="addForward()">Add</button>
+          </div>
+          <div id="fwd-output" class="output" style="min-height:60px">Forward rules...</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Reverses (device → host)</div>
+          <div class="field" style="margin-top:.75rem">
+            <label>Device Serial</label>
+            <input type="text" id="rev-serial" placeholder="e.g. emulator-5554"/>
+          </div>
+          <button class="btn btn-secondary btn-sm" onclick="listReverses()" style="margin-bottom:.75rem">List</button>
+          <div style="display:flex;gap:.5rem;margin-bottom:.75rem">
+            <input type="text" id="rev-remote" placeholder="tcp:9090" style="flex:1"/>
+            <input type="text" id="rev-local" placeholder="tcp:9090" style="flex:1"/>
+            <button class="btn btn-primary btn-sm" onclick="addReverse()">Add</button>
+          </div>
+          <div id="rev-output" class="output" style="min-height:60px">Reverse rules...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== SYSTEM ==================== -->
+    <div id="page-system" class="page">
+      <h2>⚙️ System</h2>
+      <p>Reboot, root, remount, and transport mode controls.</p>
+
+      <div class="card">
+        <div class="field">
+          <label>Device Serial</label>
+          <input type="text" id="sys-serial" placeholder="e.g. emulator-5554"/>
+        </div>
+      </div>
+
+      <div class="grid-3">
+        <div class="card" style="text-align:center">
+          <div style="font-size:2rem;margin-bottom:.5rem">🔄</div>
+          <div class="card-title">Reboot to OS</div>
+          <button class="btn btn-primary btn-sm" onclick="sysAction('reboot','')" style="margin-top:.75rem">Reboot</button>
+        </div>
+        <div class="card" style="text-align:center">
+          <div style="font-size:2rem;margin-bottom:.5rem">⚡</div>
+          <div class="card-title">Reboot to Bootloader</div>
+          <button class="btn btn-primary btn-sm" onclick="sysAction('reboot','bootloader')" style="margin-top:.75rem">Bootloader</button>
+        </div>
+        <div class="card" style="text-align:center">
+          <div style="font-size:2rem;margin-bottom:.5rem">🔧</div>
+          <div class="card-title">Reboot to Recovery</div>
+          <button class="btn btn-primary btn-sm" onclick="sysAction('reboot','recovery')" style="margin-top:.75rem">Recovery</button>
+        </div>
+        <div class="card" style="text-align:center">
+          <div style="font-size:2rem;margin-bottom:.5rem">🔓</div>
+          <div class="card-title">Root (restart adbd)</div>
+          <button class="btn btn-danger btn-sm" onclick="sysAction('root','')" style="margin-top:.75rem">Root</button>
+        </div>
+        <div class="card" style="text-align:center">
+          <div style="font-size:2rem;margin-bottom:.5rem">💿</div>
+          <div class="card-title">Remount /system</div>
+          <button class="btn btn-secondary btn-sm" onclick="sysAction('remount','')" style="margin-top:.75rem">Remount</button>
+        </div>
+        <div class="card" style="text-align:center">
+          <div style="font-size:2rem;margin-bottom:.5rem">📡</div>
+          <div class="card-title">TCP/IP Mode</div>
+          <button class="btn btn-secondary btn-sm" onclick="sysAction('tcpip','')" style="margin-top:.75rem">TCP/IP</button>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-title">System Output</div>
+        <div id="sys-output" class="output" style="min-height:60px">System action output...</div>
+      </div>
+    </div>
+
+    <!-- ==================== FASTBOOT ==================== -->
+    <div id="page-fastboot" class="page">
+      <h2>⚡ Fastboot</h2>
+      <p>Flash firmware and manage bootloader operations.</p>
+      <p style="color:var(--yellow)">⚠️ Requires device in fastboot mode and TCP transport forwarded via <code class="mono">adb forward tcp:5556 localabstract:fastboot</code></p>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Connection</div>
+          <div style="display:flex;gap:.5rem;margin-top:.75rem">
+            <button class="btn btn-primary" onclick="fbConnect()">⚡ Connect</button>
+            <button class="btn btn-danger" onclick="fbDisconnect()">Disconnect</button>
+          </div>
+          <div id="fb-status" class="output" style="margin-top:.75rem;min-height:40px">Not connected</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Get Variable</div>
+          <div style="display:flex;gap:.5rem;margin-top:.75rem">
+            <input type="text" id="fb-var" placeholder="product, current-slot..." style="flex:1"/>
+            <button class="btn btn-secondary" onclick="fbGetVar()">Get</button>
+          </div>
+          <div style="display:flex;gap:.3rem;flex-wrap:wrap;margin-top:.5rem">
+            <button class="btn btn-sm btn-secondary" onclick="setFbVar('product')">product</button>
+            <button class="btn btn-sm btn-secondary" onclick="setFbVar('current-slot')">slot</button>
+            <button class="btn btn-sm btn-secondary" onclick="setFbVar('max-download-size')">max-dl</button>
+            <button class="btn btn-sm btn-secondary" onclick="setFbVar('has-slot:boot')">has-slot</button>
+            <button class="btn btn-sm btn-secondary" onclick="setFbVar('version-bootloader')">bootloader</button>
+          </div>
+          <div id="fb-var-output" class="output" style="margin-top:.5rem;min-height:30px">Variable output...</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Flash / Erase</div>
+          <div class="field" style="margin-top:.75rem">
+            <label>Partition</label>
+            <input type="text" id="fb-partition" placeholder="boot, recovery, system..."/>
+          </div>
+          <div class="field">
+            <label>Image Path (server-side)</label>
+            <input type="text" id="fb-image" placeholder="/path/to/boot.img"/>
+          </div>
+          <div style="display:flex;gap:.5rem">
+            <button class="btn btn-primary btn-sm" onclick="fbFlash()">🔥 Flash</button>
+            <button class="btn btn-danger btn-sm" onclick="fbErase()">🗑️ Erase</button>
+          </div>
+          <div id="fb-flash-output" class="output" style="margin-top:.5rem;min-height:30px">Flash output...</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Reboot / Lock</div>
+          <div style="display:flex;gap:.5rem;margin-top:.75rem;flex-wrap:wrap">
+            <button class="btn btn-primary btn-sm" onclick="fbReboot('')">Reboot OS</button>
+            <button class="btn btn-secondary btn-sm" onclick="fbReboot('bootloader')">Bootloader</button>
+            <button class="btn btn-secondary btn-sm" onclick="fbReboot('recovery')">Recovery</button>
+            <button class="btn btn-secondary btn-sm" onclick="fbLock()">🔒 Lock</button>
+            <button class="btn btn-danger btn-sm" onclick="fbUnlock()">🔓 Unlock</button>
+          </div>
+          <div id="fb-cmd-output" class="output" style="margin-top:.5rem;min-height:30px">Command output...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ==================== WIRELESS ==================== -->
+    <div id="page-wireless" class="page">
+      <h2>📡 Wireless ADB</h2>
+      <p>Connect and disconnect devices over WiFi.</p>
+
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-title">Connect</div>
+          <div class="field" style="margin-top:.75rem">
+            <label>Device IP</label>
+            <input type="text" id="wireless-host" placeholder="192.168.1.100"/>
+          </div>
+          <div class="field">
+            <label>Port</label>
+            <input type="text" id="wireless-port" value="5555" style="width:100px"/>
+          </div>
+          <button class="btn btn-primary" onclick="wirelessConnect()">📡 Connect</button>
+          <div id="wireless-connect-output" class="output" style="margin-top:.75rem;min-height:40px">Connect output...</div>
+        </div>
+
+        <div class="card">
+          <div class="card-title">Disconnect</div>
+          <div class="field" style="margin-top:.75rem">
+            <label>Device IP</label>
+            <input type="text" id="wireless-dc-host" placeholder="192.168.1.100"/>
+          </div>
+          <div class="field">
+            <label>Port</label>
+            <input type="text" id="wireless-dc-port" value="5555" style="width:100px"/>
+          </div>
+          <button class="btn btn-danger" onclick="wirelessDisconnect()">📴 Disconnect</button>
+          <div id="wireless-dc-output" class="output" style="margin-top:.75rem;min-height:40px">Disconnect output...</div>
+        </div>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<script>
+// ==================== Navigation ====================
+document.querySelectorAll('[data-page]').forEach(link => {
+  link.addEventListener('click', () => {
+    const page = link.dataset.page;
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('page-' + page).classList.add('active');
+    link.classList.add('active');
+  });
+});
+
+// ==================== API Helper ====================
+const API = 'src/api.php';
+
+async function call(action, params = {}) {
+  const fd = new FormData();
+  fd.append('action', action);
+  Object.entries(params).forEach(([k, v]) => fd.append(k, v));
+  try {
+    const r = await fetch(API, { method: 'POST', body: fd });
+    const d = await r.json();
+    if (!d.success) { err(d.error); return null; }
+    return d;
+  } catch(e) { err('Network error: ' + e.message); return null; }
+}
+
+function ok(html) { return `<span class="ok">✓ ${html}</span>`; }
+function err(msg) {
+  console.error(msg);
+  const el = document.querySelector('.output:last-child') || document.getElementById('server-status');
+  if (el) el.innerHTML = `<span class="err">✗ ${msg}</span>`;
+}
+function info(msg) { return `<span class="info">ℹ ${msg}</span>`; }
+function out(el, html) { if (el) el.innerHTML = html; }
+
+// ==================== Server ====================
+async function checkServer() {
+  const el = document.getElementById('server-status');
+  el.innerHTML = '<div class="spinner"></div> Checking...';
+  const d = await call('server_status');
+  if (d) out(el, `ADB Server v${d.version}\n${ok('Connected and ready')}`);
+}
+
+// ==================== Devices ====================
+async function refreshDevices() {
+  const el = document.getElementById('overview-devices');
+  el.innerHTML = '<div class="spinner"></div> Loading...';
+  const d = await call('list_devices');
+  if (d && d.devices) {
+    if (d.devices.length === 0) {
+      out(el, 'No devices connected. Connect a device via USB or use wireless ADB.');
+      return;
+    }
+    let html = d.devices.map(dev =>
+      `${dev.type === 'device' ? '✅' : '❌'} <strong>${dev.id}</strong> — ${dev.type}`
+    ).join('\n');
+    out(el, html);
+  }
+}
+
+async function listDevices() {
+  const el = document.getElementById('device-list-output');
+  el.innerHTML = '<div class="spinner"></div>';
+  const d = await call('list_devices');
+  if (d) {
+    const html = d.devices.map(dev =>
+      `<code class="mono">${dev.id}</code> <span class="badge ${dev.type==='device'?'badge-green':'badge-red'}">${dev.type}</span>`
+    ).join('\n') || '<span class="text-gray-500">No devices found</span>';
+    out(el, html);
+    renderDeviceCards(d.devices);
+  }
+}
+
+async function listDevicesPaths() {
+  const el = document.getElementById('device-list-output');
+  el.innerHTML = '<div class="spinner"></div>';
+  const d = await call('list_devices_paths');
+  if (d) {
+    const html = d.devices.map(dev =>
+      `<code class="mono">${dev.id}</code> <span class="badge ${dev.type==='device'?'badge-green':'badge-red'}">${dev.type}</span> <code class="mono">${dev.path || '—'}</code>`
+    ).join('\n') || 'No devices found';
+    out(el, html);
+    renderDeviceCards(d.devices);
+  }
+}
+
+function renderDeviceCards(devices) {
+  const container = document.getElementById('device-cards');
+  container.innerHTML = devices.map(dev => `
+    <div class="device-card" onclick="selectDevice('${dev.id}')">
+      <div class="device-icon">📱</div>
+      <div>
+        <div class="device-name">${dev.id}</div>
+        <div class="device-status">${dev.type}${dev.path ? ' · ' + dev.path : ''}</div>
+      </div>
+    </div>
+  `).join('');
+}
+
+function selectDevice(id) {
+  ['info-serial','shell-serial','install-serial','uninstall-serial','files-serial',
+   'screen-serial','fb-serial','fwd-serial','rev-serial','sys-serial'
+  ].forEach(elId => {
+    const el = document.getElementById(elId);
+    if (el) el.value = id;
+  });
+}
+
+// ==================== Device Info ====================
+async function getDeviceInfo() {
+  const serial = document.getElementById('info-serial').value;
+  if (!serial) { err('Enter device serial'); return; }
+  const d = await call('device_info', { serial });
+  if (d) {
+    document.getElementById('info-stats').style.display = 'grid';
+    document.getElementById('info-full').style.display = 'block';
+    document.getElementById('info-model').textContent = d.model || '—';
+    document.getElementById('info-android').textContent = d.android || '—';
+    document.getElementById('info-sdk').textContent = d.sdk || '—';
+    document.getElementById('info-ab').textContent = d.abi || '—';
+    document.getElementById('info-ip').textContent = d.ip || '—';
+    document.getElementById('info-state').textContent = d.state || '—';
+    out(document.getElementById('info-output'),
+      `Serial:       ${d.serial}\n` +
+      `State:        ${d.state}\n` +
+      `Path:         ${d.path}\n` +
+      `IP Address:   ${d.ip || 'N/A'}\n` +
+      `Model:        ${d.model}\n` +
+      `Android:      ${d.android}\n` +
+      `ABI:          ${d.abi}\n` +
+      `SDK:          ${d.sdk}\n` +
+      `Manufacturer: ${d.manufacturer}`
+    );
+  }
+}
+
+// ==================== Shell ====================
+function setShell(cmd) { document.getElementById('shell-cmd').value = cmd; }
+
+async function runShell() {
+  const serial = document.getElementById('shell-serial').value;
+  const cmd = document.getElementById('shell-cmd').value;
+  if (!serial || !cmd) { err('Enter serial and command'); return; }
+  const el = document.getElementById('shell-output');
+  el.innerHTML = '<div class="spinner"></div> Running...';
+  const d = await call('device_shell', { serial, command: cmd });
+  if (d) out(el, d.output || '(no output)');
+}
+
+// ==================== Install/Uninstall ====================
+async function installApk() {
+  const serial = document.getElementById('install-serial').value;
+  const path = document.getElementById('install-path').value;
+  if (!serial || !path) { err('Enter serial and APK path'); return; }
+  const el = document.getElementById('install-output');
+  el.innerHTML = '<div class="spinner"></div> Installing...';
+  const d = await call('install_apk', { serial, path });
+  if (d) out(el, ok('Installed successfully') + '\nPath: ' + d.path);
+}
+
+async function uninstallPkg() {
+  const serial = document.getElementById('uninstall-serial').value;
+  const pkg = document.getElementById('uninstall-pkg').value;
+  if (!serial || !pkg) { err('Enter serial and package'); return; }
+  const el = document.getElementById('uninstall-output');
+  el.innerHTML = '<div class="spinner"></div> Uninstalling...';
+  const d = await call('uninstall_package', { serial, package: pkg });
+  if (d) out(el, ok('Uninstalled') + '\nPackage: ' + pkg);
+}
+
+async function clearPkg() {
+  const serial = document.getElementById('uninstall-serial').value;
+  const pkg = document.getElementById('uninstall-pkg').value;
+  if (!serial || !pkg) { err('Enter serial and package'); return; }
+  const el = document.getElementById('uninstall-output');
+  el.innerHTML = '<div class="spinner"></div> Clearing...';
+  const d = await call('clear_package', { serial, package: pkg });
+  if (d) out(el, ok('Data cleared') + '\nPackage: ' + pkg);
+}
+
+async function checkInstalled() {
+  const serial = document.getElementById('uninstall-serial').value;
+  const pkg = document.getElementById('uninstall-pkg').value;
+  if (!serial || !pkg) { err('Enter serial and package'); return; }
+  const d = await call('is_installed', { serial, package: pkg });
+  if (d) out(document.getElementById('uninstall-output'),
+    d.installed ? ok('✅ Installed') : '❌ Not installed'
+  );
+}
+
+// ==================== Files ====================
+function setFilePath(p) { document.getElementById('files-path').value = p; }
+
+async function readdir() {
+  const serial = document.getElementById('files-serial').value;
+  const path = document.getElementById('files-path').value;
+  if (!serial || !path) { err('Enter serial and path'); return; }
+  const el = document.getElementById('files-output');
+  el.innerHTML = '<div class="spinner"></div>';
+  const d = await call('readdir', { serial, path });
+  if (d && d.entries) {
+    const html = d.entries.map(e =>
+      `${e.is_dir ? '📁' : '📄'} <code class="mono">${e.name}</code>  ${e.size.toLocaleString()} bytes  <span class="badge badge-blue">${e.mode}</span>`
+    ).join('\n');
+    out(el, html || 'Empty directory');
+  }
+}
+
+async function pushFile() {
+  const serial = document.getElementById('files-serial').value;
+  const local = document.getElementById('push-local').value;
+  const remote = document.getElementById('push-remote').value;
+  const mode = document.getElementById('push-mode').value;
+  if (!serial || !local || !remote) { err('Fill all fields'); return; }
+  const el = document.getElementById('files-transfer-output');
+  el.innerHTML = '<div class="spinner"></div> Pushing...';
+  const d = await call('push_file', { serial, local_path: local, remote_path: remote, mode });
+  if (d) out(el, ok('Pushed') + `\n${local} → ${remote}`);
+}
+
+async function pullFile() {
+  const serial = document.getElementById('files-serial').value;
+  const remote = document.getElementById('push-remote').value;
+  if (!serial || !remote) { err('Enter serial and remote path'); return; }
+  const el = document.getElementById('files-transfer-output');
+  el.innerHTML = '<div class="spinner"></div> Pulling...';
+  const d = await call('pull_file', { serial, remote_path: remote });
+  if (d) out(el, ok('Pulled') + `\nSize: ${d.size} bytes`);
+}
+
+// ==================== Screen ====================
+async function takeScreenshot() {
+  const serial = document.getElementById('screen-serial').value;
+  if (!serial) { err('Enter device serial'); return; }
+  const area = document.getElementById('screenshot-area');
+  area.innerHTML = '<div class="spinner"></div> Capturing...';
+  const d = await call('screencap', { serial });
+  if (d) {
+    area.innerHTML = `<img class="screenshot-img" src="${d.preview}" alt="Screenshot"/><p style="margin-top:.5rem;font-size:.75rem;color:var(--text3)">${d.size.toLocaleString()} bytes</p>`;
+  }
+}
+
+async function getFramebuffer() {
+  const serial = document.getElementById('fb-serial').value;
+  const format = document.getElementById('fb-format').value;
+  if (!serial) { err('Enter device serial'); return; }
+  const el = document.getElementById('fb-output');
+  el.innerHTML = '<div class="spinner"></div>';
+  const d = await call('framebuffer', { serial, format });
+  if (d) {
+    out(el, `Width:     ${d.width}\nHeight:    ${d.height}\nBPP:       ${d.bpp}\nData Size: ${d.size} bytes`);
+  }
+}
+
+// ==================== Port Forward ====================
+async function listForwards() {
+  const serial = document.getElementById('fwd-serial').value;
+  if (!serial) { err('Enter serial'); return; }
+  const el = document.getElementById('fwd-output');
+  el.innerHTML = '<div class="spinner"></div>';
+  const d = await call('list_forwards', { serial });
+  if (d && d.forwards) {
+    out(el, d.forwards.length ?
+      d.forwards.map(f => `${f.local} → ${f.remote}`).join('\n') : 'No forward rules');
+  }
+}
+
+async function addForward() {
+  const serial = document.getElementById('fwd-serial').value;
+  const local = document.getElementById('fwd-local').value;
+  const remote = document.getElementById('fwd-remote').value;
+  if (!serial || !local || !remote) { err('Fill all fields'); return; }
+  const el = document.getElementById('fwd-output');
+  el.innerHTML = '<div class="spinner"></div>';
+  const d = await call('add_forward', { serial, local, remote });
+  if (d) out(el, ok(`Forwarded: ${local} → ${remote}`));
+}
+
+async function listReverses() {
+  const serial = document.getElementById('rev-serial').value;
+  if (!serial) { err('Enter serial'); return; }
+  const el = document.getElementById('rev-output');
+  el.innerHTML = '<div class="spinner"></div>';
+  const d = await call('list_reverses', { serial });
+  if (d && d.reverses) {
+    out(el, d.reverses.length ?
+      d.reverses.map(r => `${r.remote} → ${r.local}`).join('\n') : 'No reverse rules');
+  }
+}
+
+async function addReverse() {
+  const serial = document.getElementById('rev-serial').value;
+  const remote = document.getElementById('rev-remote').value;
+  const local = document.getElementById('rev-local').value;
+  if (!serial || !remote || !local) { err('Fill all fields'); return; }
+  const el = document.getElementById('rev-output');
+  el.innerHTML = '<div class="spinner"></div>';
+  const d = await call('add_reverse', { serial, remote, local });
+  if (d) out(el, ok(`Reversed: ${remote} → ${local}`));
+}
+
+// ==================== System ====================
+async function sysAction(action, mode) {
+  const serial = document.getElementById('sys-serial').value;
+  if (!serial) { err('Enter device serial'); return; }
+  const el = document.getElementById('sys-output');
+  el.innerHTML = `<div class="spinner"></div> ${action}...`;
+  const d = await call(action === 'reboot' ? 'reboot' : action, { serial, mode, port: 5555 });
+  if (d) out(el, ok(d.status));
+}
+
+// ==================== Fastboot ====================
+async function fbConnect() {
+  const el = document.getElementById('fb-status');
+  el.innerHTML = '<div class="spinner"></div> Connecting...';
+  const d = await call('fastboot_connect');
+  if (d) out(el, ok('Connected — Product: ' + d.product));
+}
+
+async function fbDisconnect() {
+  const d = await call('fastboot_disconnect');
+  if (d) out(document.getElementById('fb-status'), 'Disconnected');
+}
+
+function setFbVar(v) { document.getElementById('fb-var').value = v; }
+
+async function fbGetVar() {
+  const el = document.getElementById('fb-var-output');
+  const v = document.getElementById('fb-var').value;
+  if (!v) { err('Enter variable name'); return; }
+  el.innerHTML = '<div class="spinner"></div>';
+  const d = await call('fastboot_getvar', { variable: v });
+  if (d) out(el, `${d.variable} = ${d.value ?? '(empty)'}`);
+}
+
+async function fbFlash() {
+  const partition = document.getElementById('fb-partition').value;
+  const image = document.getElementById('fb-image').value;
+  if (!partition || !image) { err('Enter partition and image path'); return; }
+  const el = document.getElementById('fb-flash-output');
+  el.innerHTML = '<div class="spinner"></div> Flashing...';
+  const d = await call('fastboot_flash', { partition, image_path: image });
+  if (d) out(el, ok(`Flashed ${partition}`));
+}
+
+async function fbErase() {
+  const partition = document.getElementById('fb-partition').value;
+  if (!partition) { err('Enter partition name'); return; }
+  const el = document.getElementById('fb-flash-output');
+  el.innerHTML = '<div class="spinner"></div> Erasing...';
+  const d = await call('fastboot_erase', { partition });
+  if (d) out(el, ok(`Erased ${partition}`));
+}
+
+async function fbReboot(mode) {
+  const el = document.getElementById('fb-cmd-output');
+  el.innerHTML = `<div class="spinner"></div> Rebooting...`;
+  const d = await call('fastboot_reboot', { mode });
+  if (d) out(el, ok(`Rebooting ${mode || 'to OS'}`));
+}
+
+async function fbLock() {
+  const el = document.getElementById('fb-cmd-output');
+  el.innerHTML = '<div class="spinner"></div> Locking...';
+  const d = await call('fastboot_lock');
+  if (d) out(el, ok('Bootloader locked'));
+}
+
+async function fbUnlock() {
+  const el = document.getElementById('fb-cmd-output');
+  el.innerHTML = '<div class="spinner"></div> Unlocking...';
+  const d = await call('fastboot_unlock');
+  if (d) out(el, ok('Bootloader unlocked'));
+}
+
+// ==================== Wireless ====================
+async function wirelessConnect() {
+  const host = document.getElementById('wireless-host').value;
+  const port = document.getElementById('wireless-port').value;
+  if (!host) { err('Enter device IP'); return; }
+  const el = document.getElementById('wireless-connect-output');
+  el.innerHTML = '<div class="spinner"></div> Connecting...';
+  const d = await call('wireless_connect', { host, port });
+  if (d) out(el, ok(d.message || 'Connected'));
+}
+
+async function wirelessDisconnect() {
+  const host = document.getElementById('wireless-dc-host').value;
+  const port = document.getElementById('wireless-dc-port').value;
+  if (!host) { err('Enter device IP'); return; }
+  const el = document.getElementById('wireless-dc-output');
+  el.innerHTML = '<div class="spinner"></div> Disconnecting...';
+  const d = await call('wireless_disconnect', { host, port });
+  if (d) out(el, ok(d.message || 'Disconnected'));
+}
+</script>
+</body>
+</html>

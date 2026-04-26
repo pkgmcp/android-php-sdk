@@ -1,0 +1,8 @@
+{
+    "name": "android-php-sdk/demo",
+    "description": "Interactive web demo for fastboot-php and adb-php",
+    "type": "project",
+    "require": {
+        "php": ">=8.3"
+    }
+}
